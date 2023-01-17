@@ -6,7 +6,7 @@ while read line
 do
     if [[ $line =~ $inputkey ]]
     then
-        echo $line | sed 's/[a-zA-Z]/\L&/g' | sed 's/\([a-zA-Z]\)[^a-zA-Z]*\([a-zA-Z]\)/\U\1\L\2/g'  >> output.txt
+        echo $line | sed 's/[a-zA-Z]/\U&/g' | sed 's/\([a-zA-Z]\)[^a-zA-Z]*\([a-zA-Z]\)/\U\1\L\2/g'  >> output.txt
     else
         if [[ $line != '' ]]
         then
