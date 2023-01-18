@@ -1,4 +1,10 @@
-Date,Category,Amount,Name
+date,category,amount,name
 01-01-23,drinks,250,Mohan
+02-01-23,toys,250,Mohan
 01-01-23,food,550,Sudarshan
-01-01-23,food,550,Sudarshan
+01-01-22,food,2000,visw
+01-01-22,food,2000,visw
+01-01-22,food,2000,visw
+01-01-23,girls,2000,PK
+01-01-23,girls,2000,PK
+01-01-23,girls,2000,PK
