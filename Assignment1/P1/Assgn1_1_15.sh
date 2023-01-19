@@ -23,7 +23,6 @@ echo -n "The reversed numbers are ">> output.txt
 rev ./lcm.txt 1> rev_num.txt
 file="rev_num.txt"
 LCM=$(head -n 1 $file)
-count=0
 while read str
 do
     if [ "$str" != "" ]
