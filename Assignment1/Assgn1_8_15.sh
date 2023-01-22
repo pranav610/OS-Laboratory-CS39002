@@ -17,7 +17,6 @@ echo "$1,$2,$3,$4" >> main.csv
 header=$(head -1 main.csv)
 tail -n +2 main.csv | sort -t, -k 1.7n -k 1.4,1.5n -k 1.1,1.2n > temp.csv
 
-
 if [ "$flagc" = true ]; then
   awk -F, -v category="$category" 'BEGIN {sum=0} $2 == category {sum += $3} END {print sum}' main.csv
 fi
