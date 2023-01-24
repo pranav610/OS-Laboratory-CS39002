@@ -1,5 +1,8 @@
 LCM=1
 rev ./lcm.txt | while read str; do
+    if [[ $str == "" ]];then
+    continue;
+    fi
     a_temp=$LCM
     b_temp=$str
     while [ $b_temp -gt 0 ];
