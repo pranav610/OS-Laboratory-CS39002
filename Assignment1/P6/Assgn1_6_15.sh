@@ -1,5 +1,3 @@
-#! /bin/bash
-
 declare -a is_prime # declare smallest prime factor array
 for(( i=0 ; i <= 1000000 ; i++))
 do
