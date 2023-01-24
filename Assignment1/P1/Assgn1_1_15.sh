@@ -1,4 +1,3 @@
-#! /bin/bash 
 LCM=1
 rev ./lcm.txt | while read str; do
     a_temp=$LCM

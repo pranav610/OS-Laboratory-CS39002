@@ -1,4 +1,3 @@
-#! /bin/bash
 while IFS= read -r line
 do
     if echo "$line" | grep -qw "$2";
