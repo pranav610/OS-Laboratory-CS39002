@@ -26,7 +26,7 @@ if [ "$flagn" = true ]; then
 fi
 
 if [ "$flags" = true ]; then
-  if [ "$column_name" = 3 ]; then
+  if [ "$column_no" = 3 ]; then
     tail -n +2 main.csv | sort -t, -k3 -n > temp.csv
   else
     tail -n +2 main.csv | sort -t, -k$column_no > temp.csv
