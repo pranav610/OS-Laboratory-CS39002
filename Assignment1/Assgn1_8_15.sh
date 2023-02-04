@@ -13,6 +13,7 @@ done
 
 shift $((OPTIND-1))
 echo "$1,$2,$3,$4" >> main.csv
+echo "Inserted $1,$2,$3,$4 in main.csv"
 
 header=$(head -1 main.csv)
 tail -n +2 main.csv | sort -t, -k 1.7n -k 1.4,1.5n -k 1.1,1.2n > temp.csv
@@ -28,7 +29,7 @@ fi
 if [ "$flags" = true ]; then
   if [ "$column_no" = 3 ]; then
     tail -n +2 main.csv | sort -t, -k3 -n > temp.csv
-  else
+  elif [ "$column_no" = 2 ] || [ "$column_no" = 4 ]; then
     tail -n +2 main.csv | sort -t, -k$column_no > temp.csv
   fi
 fi
