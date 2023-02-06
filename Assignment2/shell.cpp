@@ -10,6 +10,9 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
+#include "delep.h"
+// #include "delep.cpp"
+
 using namespace std;
 
 class Command
@@ -122,7 +125,6 @@ int execute_command(Command &command, bool background)
     dup2(command.input_fd, STDIN_FILENO);
     dup2(command.output_fd, STDOUT_FILENO);
 
-
     // Execute the command
     int ret = execvp(command.command.c_str(), args);
     if (ret == -1)
@@ -163,6 +165,11 @@ void read_command(string &command)
     // Read the command from the user
     getline(cin, command);
 
+    delim_remove(command);
+}
+
+void delim_remove(string &command)
+{
     // Remove the starting and ending spaces
     while (command[0] == ' ')
         command.erase(0, 1);
@@ -170,18 +177,9 @@ void read_command(string &command)
         command.pop_back();
 }
 
-void delim_remove(string &command)
-{
-       // Remove the starting and ending spaces
-    while (command[0] == ' ')
-        command.erase(0, 1);
-    while (command[command.length() - 1] == ' ')
-        command.pop_back(); 
-}
-
 void ctrl_c_handler(int signum)
 {
-    cout<<endl;
+    cout << endl;
     shell_prompt();
 }
 
@@ -219,10 +217,12 @@ int main()
                 command.erase(0, i + 1);
                 i = 0;
             }
-            else i++; 
+            else
+                i++;
         }
         delim_remove(command);
-        if(command!="")commands.push_back(command);
+        if (command != "")
+            commands.push_back(command);
         int pipefd[2];
         for (int i = 0; i < commands.size(); i++)
         {
@@ -251,7 +251,7 @@ int main()
                 if (i < commands.size() - 1)
                 {
                     pipe(pipefd);
-                    if(pipefd[0] == -1 || pipefd[1] == -1)
+                    if (pipefd[0] == -1 || pipefd[1] == -1)
                     {
                         cerr << "Error creating pipe" << endl;
                         exit(EXIT_FAILURE);
@@ -299,7 +299,19 @@ int main()
                     {
                         // Child process
                         // Execute the command
-                        execute_command(shell_command, is_background);
+                        if (shell_command.command == "delep")
+                        {
+                            if (shell_command.arguments.size() == 2)
+                            {
+                                delep((char *)shell_command.arguments[1].c_str());
+                            }
+                            else
+                            {
+                                cerr << "Invalid number of arguments" << endl;
+                            }
+                        }
+                        else
+                            execute_command(shell_command, is_background);
                     }
                     else
                     {
