@@ -1,5 +1,8 @@
+
 #include <iostream>
+#include <algorithm>
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <vector>
 #include <unistd.h>
@@ -7,7 +10,6 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
-#define MAX_ARGS 1000
 using namespace std;
 
 class Command
@@ -18,6 +20,7 @@ public:
     int input_fd, output_fd;
     string input_file, output_file;
     pid_t pid;
+    bool pipe_mode = false;
 
     Command(const string &cmd) : command(cmd), input_fd(STDIN_FILENO), output_fd(STDOUT_FILENO), input_file(""), output_file(""), pid(-1)
     {
@@ -50,6 +53,7 @@ public:
         // Parse the command string into the command and arguments
         stringstream ss(command);
         string arg;
+        int it = 0;
         while (ss >> arg)
         {
             if (arg == "<")
@@ -106,16 +110,18 @@ int execute_command(Command &command, bool background)
     // If the command is found, execute it
     // If the command is not found, print an error message
     // If the command is found, execute it
-    char *args[MAX_ARGS];
+    char **args;
+    args = new char *[command.arguments.size() + 1];
     for (int i = 0; i < command.arguments.size(); i++)
     {
-        args[i] = (char *)command.arguments[i].c_str();
+        args[i] = strdup(command.arguments[i].c_str());
     }
     args[command.arguments.size()] = NULL;
 
     // Redirect the input and output
     dup2(command.input_fd, STDIN_FILENO);
     dup2(command.output_fd, STDOUT_FILENO);
+
 
     // Execute the command
     int ret = execvp(command.command.c_str(), args);
@@ -131,13 +137,25 @@ void shell_prompt()
 {
     // Print the shell prompt in user@pcname:current_directory$
     char *user = getenv("USER");
-    char *pcname = getenv("HOSTNAME");
-    char *current_directory = new char[2];
-                size_t capacity = 1;
-                while(!(current_directory = getcwd(current_directory, 0))){
-                    current_directory = new char[capacity * 2 + 1];
-                }
+    char *pcname = new char[1];
+    size_t capacity = 1;
+    while (gethostname(pcname, capacity) < 0)
+    {
+        delete[] pcname;
+        capacity *= 2;
+        pcname = new char[capacity];
+    }
+    char *current_directory = new char[1];
+    capacity = 1;
+    while (!(current_directory = getcwd(current_directory, capacity)))
+    {
+        delete[] current_directory;
+        capacity *= 2;
+        current_directory = new char[capacity];
+    }
     cout << user << "@" << pcname << ":" << current_directory << "$ ";
+    delete[] current_directory;
+    delete[] pcname;
 }
 void read_command(string &command)
 {
@@ -148,83 +166,149 @@ void read_command(string &command)
     while (command[0] == ' ')
         command.erase(0, 1);
     while (command[command.length() - 1] == ' ')
-        command.erase(command.length() - 1, 1);
+        command.pop_back();
+}
+
+void delim_remove(string &command)
+{
+       // Remove the starting and ending spaces
+    while (command[0] == ' ')
+        command.erase(0, 1);
+    while (command[command.length() - 1] == ' ')
+        command.pop_back(); 
 }
 
 int main()
 {
+    size_t job_number = 1;
+
     while (1)
     {
         shell_prompt();
+
         string command;
         read_command(command);
         if (command == "")
         {
             continue;
         }
-
-        // Add to history - to be implemented
-
-        try
+        vector<string> commands;
+        int i = 0;
+        while (i < command.length())
         {
-            bool is_background = false;
-            if (command.back() == '&')
+            if (command[i] == '|')
             {
-                is_background = true;
-                command.pop_back();
+                commands.push_back(command.substr(0, i));
+                command.erase(0, i + 1);
+                i = 0;
             }
+            else i++; 
+        }
+        delim_remove(command);
+        if(command!="")commands.push_back(command);
+        int pipefd[2];
+        for (int i = 0; i < commands.size(); i++)
+        {
+            // Add to history - to be implemented
+            try
+            {
 
-            Command shell_command(command);
+                delim_remove(commands[i]);
+                const string cmd = commands[i];
+                Command shell_command(cmd);
 
-            // Check if the command is a built-in command
-            if (shell_command.command == "exit")
-            {
-                exit(0);
-            }
-            else if (shell_command.command == "cd")
-            {
-                if (shell_command.arguments.size() == 1)
+                bool is_background = false;
+                if (find(shell_command.arguments.begin(), shell_command.arguments.end(), "&") != shell_command.arguments.end())
                 {
-                    chdir(shell_command.arguments[0].c_str());
+                    is_background = true;
+                    shell_command.arguments.erase(find(shell_command.arguments.begin(), shell_command.arguments.end(), "&"));
                 }
-                else
+
+                // Check if the command is a built-in command
+
+                // pipe
+                if (i > 0)
                 {
-                    cerr << "Invalid number of arguments" << endl;
+                    shell_command.input_fd = pipefd[0];
                 }
-            }
-            else if (shell_command.command == "pwd")
-            {
-                char *current_directory = new char[2];
-                size_t capacity = 1;
-                while(!(current_directory = getcwd(current_directory, 0))){
-                    current_directory = new char[capacity * 2 + 1];
-                }
-                cout << current_directory << endl;
-            }
-            else
-            {
-                // If not, fork a child process and execute the command
-                pid_t pid_child = fork();
-                if (pid_child == 0)
+                if (i < commands.size() - 1)
                 {
-                    // Child process
-                    // Execute the command
-                    execute_command(shell_command, is_background);
-                }
-                else
-                {
-                    // Parent process
-                    // Wait for the child process to finish
-                    if (!is_background)
+                    pipe(pipefd);
+                    if(pipefd[0] == -1 || pipefd[1] == -1)
                     {
-                        waitpid(pid_child, NULL, 0);
+                        cerr << "Error creating pipe" << endl;
+                        exit(EXIT_FAILURE);
+                    }
+                    shell_command.output_fd = pipefd[1];
+                }
+
+                if (shell_command.command == "exit")
+                {
+                    exit(0);
+                }
+                else if (shell_command.command == "cd")
+                {
+                    if (shell_command.arguments.size() == 1)
+                    {
+                        chdir(getenv("HOME"));
+                    }
+                    else if (shell_command.arguments.size() == 2)
+                    {
+                        chdir(shell_command.arguments[1].c_str());
+                    }
+                    else
+                    {
+                        cerr << "Invalid number of arguments" << endl;
+                    }
+                }
+                else if (shell_command.command == "pwd")
+                {
+                    char *current_directory = new char[1];
+                    size_t capacity = 1;
+                    while (!(current_directory = getcwd(current_directory, capacity)))
+                    {
+                        delete[] current_directory;
+                        capacity *= 2;
+                        current_directory = new char[capacity];
+                    }
+                    cout << current_directory << endl;
+                    delete[] current_directory;
+                }
+                else
+                {
+                    // If not, fork a child process and execute the command
+                    pid_t pid_child = fork();
+                    if (pid_child == 0)
+                    {
+                        // Child process
+                        // Execute the command
+                        execute_command(shell_command, is_background);
+                    }
+                    else
+                    {
+                        // Parent process
+                        // Wait for the child process to finish
+                        if (is_background)
+                        {
+                            cout << "[" << job_number++ << "] " << pid_child << endl;
+                        }
+                        else
+                        {
+                            waitpid(pid_child, NULL, 0);
+                        }
+                    }
+
+                    // Reap any completed child processes to avoid zombie processes
+                    int status;
+                    while (waitpid(-1, &status, WNOHANG) > 0)
+                    {
                     }
                 }
             }
-        }
-        catch (const char *msg)
-        {
-            cerr << msg << endl;
+            catch (const char *msg)
+            {
+                cerr << msg << endl;
+            }
         }
     }
     return 0;
