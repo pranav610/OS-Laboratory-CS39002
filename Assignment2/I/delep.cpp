@@ -1,3 +1,17 @@
+#include <stdio.h>
+#include <string.h>
+#include <dirent.h>
+#include <unistd.h>
+#include <bits/stdc++.h>
+
+/*
+References:
+1. https://www.baeldung.com/linux/file-locking
+2. https://man7.org/linux/man-pages/man2/readlink.2.html
+3. https://linux.die.net/man/2/flock
+4. https://www.gnu.org/software/libc/manual/html_node/Directory-Entries.html
+*/
+
 void delep(char *path)
 {
     DIR *dirp = opendir("/proc");
