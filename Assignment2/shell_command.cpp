@@ -1,4 +1,5 @@
 #include "shell_command.h"
+#include "shell_exception.h"
 #include <unistd.h>
 #include <fcntl.h>
 #include <iostream>
@@ -22,30 +23,47 @@ Shell_Command::~Shell_Command()
 void Shell_Command::parse_command()
 {
     /*
-     * Need more updates here to handle cases
+     * Need to parse the command string into the command and arguments
+     * Should support-
+     * 1. Run an external command e.g 'cc –o myprog myprog.c'
+     * 2. Run an external command by redirecting standard input from a file './a.out < infile.txt'
+     * 3. Run an external command by redirecting standard output to a file './a.out > outfile.txt'
+     * 4. Combination of input and output redirection './a.out < infile.txt > outfile.txt'
+     * 5. Run an external command in the background with possible input and output redirections './a.out < infile.txt > outfile.txt &'
+     * 6. Run several external commands in the pipe mode 'cat abc.c | sort | more'
      */
-    // Split the command into words using a stringstream
+
+    /* Need to do more improvisations here */
+    
+    // Parse the command string into the command and arguments
     stringstream ss(command);
-    string word;
-    while (ss >> word)
+    string arg;
+    while (ss >> arg)
     {
-        // Check if the word is an input/output redirection symbol
-        if (word == "<")
+        if (arg == "<")
         {
             ss >> input_file;
         }
-        else if (word == ">")
+        else if (arg == ">")
         {
             ss >> output_file;
         }
+        else if (arg == "&")
+        {
+            // Handle background process here
+        }
         else
         {
-            arguments.push_back(word);
+            arguments.push_back(arg);
         }
     }
 
-    // The first word in the arguments list is the command to be executed
+    // Set the command to the first argument
     command = arguments[0];
+
+    // Remove the command from the arguments
+    arguments.erase(arguments.begin());
+
 }
 
 void Shell_Command::IO_redirection()
