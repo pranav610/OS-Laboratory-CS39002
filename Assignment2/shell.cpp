@@ -133,13 +133,13 @@ void shell_prompt()
     char *user = getenv("USER");
     char *pcname = new char[1];
     size_t capacity = 1;
-    while(gethostname(pcname, capacity)<0)
+    while (gethostname(pcname, capacity) < 0)
     {
         delete[] pcname;
         capacity *= 2;
         pcname = new char[capacity];
     }
-    char *current_directory = new char[1]; 
+    char *current_directory = new char[1];
     capacity = 1;
     while (!(current_directory = getcwd(current_directory, capacity)))
     {
@@ -149,6 +149,7 @@ void shell_prompt()
     }
     cout << user << "@" << pcname << ":" << current_directory << "$ ";
     delete[] current_directory;
+    delete[] pcname;
 }
 void read_command(string &command)
 {
@@ -194,9 +195,9 @@ int main()
             }
             else if (shell_command.command == "cd")
             {
-                if (shell_command.arguments.size() == 1)
+                if (shell_command.arguments.size() == 2)
                 {
-                    chdir(shell_command.arguments[0].c_str());
+                    chdir(shell_command.arguments[1].c_str());
                 }
                 else
                 {
@@ -205,13 +206,16 @@ int main()
             }
             else if (shell_command.command == "pwd")
             {
-                char *current_directory = new char[2];
+                char *current_directory = new char[1];
                 size_t capacity = 1;
-                while (!(current_directory = getcwd(current_directory, 0)))
+                while (!(current_directory = getcwd(current_directory, capacity)))
                 {
-                    current_directory = new char[capacity * 2 + 1];
+                    delete[] current_directory;
+                    capacity *= 2;
+                    current_directory = new char[capacity];
                 }
-                cout << current_directory << endl;
+                cout<<current_directory<<endl;
+                delete[] current_directory;
             }
             else
             {
