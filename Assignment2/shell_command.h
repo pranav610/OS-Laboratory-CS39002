@@ -18,6 +18,7 @@ public:
     pid_t pid;
 
     Shell_Command(const string &);
+    ~Shell_Command();
     void parse_command();
     void IO_redirection();
     friend ostream &operator<<(ostream &, const Shell_Command &);
