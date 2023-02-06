@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <algorithm>
 #include <string>
@@ -19,6 +20,7 @@ public:
     int input_fd, output_fd;
     string input_file, output_file;
     pid_t pid;
+    bool pipe_mode = false;
 
     Command(const string &cmd) : command(cmd), input_fd(STDIN_FILENO), output_fd(STDOUT_FILENO), input_file(""), output_file(""), pid(-1)
     {
@@ -51,6 +53,7 @@ public:
         // Parse the command string into the command and arguments
         stringstream ss(command);
         string arg;
+        int it = 0;
         while (ss >> arg)
         {
             if (arg == "<")
@@ -119,6 +122,7 @@ int execute_command(Command &command, bool background)
     dup2(command.input_fd, STDIN_FILENO);
     dup2(command.output_fd, STDOUT_FILENO);
 
+
     // Execute the command
     int ret = execvp(command.command.c_str(), args);
     if (ret == -1)
@@ -166,9 +170,18 @@ void read_command(string &command)
         command.pop_back();
 }
 
+void delim_remove(string &command)
+{
+       // Remove the starting and ending spaces
+    while (command[0] == ' ')
+        command.erase(0, 1);
+    while (command[command.length() - 1] == ' ')
+        command.pop_back(); 
+}
+
 void ctrl_c_handler(int signum)
 {
-    cout << endl ;
+    cout<<endl;
     shell_prompt();
 }
 
@@ -189,94 +202,131 @@ int main()
     while (1)
     {
         shell_prompt();
+
         string command;
         read_command(command);
         if (command == "")
         {
             continue;
         }
-
-        // Add to history - to be implemented
-
-        try
+        vector<string> commands;
+        int i = 0;
+        while (i < command.length())
         {
-            Command shell_command(command);
+            if (command[i] == '|')
+            {
+                commands.push_back(command.substr(0, i));
+                command.erase(0, i + 1);
+                i = 0;
+            }
+            else i++; 
+        }
+        delim_remove(command);
+        if(command!="")commands.push_back(command);
+        int pipefd[2];
+        for (int i = 0; i < commands.size(); i++)
+        {
+            // Add to history - to be implemented
+            try
+            {
 
-            bool is_background = false;
-            if (find(shell_command.arguments.begin(), shell_command.arguments.end(), "&") != shell_command.arguments.end())
-            {
-                is_background = true;
-                shell_command.arguments.erase(find(shell_command.arguments.begin(), shell_command.arguments.end(), "&"));
-            }
+                delim_remove(commands[i]);
+                const string cmd = commands[i];
+                Command shell_command(cmd);
 
-            // Check if the command is a built-in command
-            if (shell_command.command == "exit")
-            {
-                exit(0);
-            }
-            else if (shell_command.command == "cd")
-            {
-                if (shell_command.arguments.size() == 1)
+                bool is_background = false;
+                if (find(shell_command.arguments.begin(), shell_command.arguments.end(), "&") != shell_command.arguments.end())
                 {
-                    chdir(getenv("HOME"));
+                    is_background = true;
+                    shell_command.arguments.erase(find(shell_command.arguments.begin(), shell_command.arguments.end(), "&"));
                 }
-                else if (shell_command.arguments.size() == 2)
+
+                // Check if the command is a built-in command
+
+                // pipe
+                if (i > 0)
                 {
-                    chdir(shell_command.arguments[1].c_str());
+                    shell_command.input_fd = pipefd[0];
                 }
-                else
+                if (i < commands.size() - 1)
                 {
-                    cerr << "Invalid number of arguments" << endl;
-                }
-            }
-            else if (shell_command.command == "pwd")
-            {
-                char *current_directory = new char[1];
-                size_t capacity = 1;
-                while (!(current_directory = getcwd(current_directory, capacity)))
-                {
-                    delete[] current_directory;
-                    capacity *= 2;
-                    current_directory = new char[capacity];
-                }
-                cout << current_directory << endl;
-                delete[] current_directory;
-            }
-            else
-            {
-                // If not, fork a child process and execute the command
-                pid_t pid_child = fork();
-                if (pid_child == 0)
-                {
-                    // Child process
-                    // Execute the command
-                    execute_command(shell_command, is_background);
-                }
-                else
-                {
-                    signal(SIGINT, SIG_IGN);
-                    // Parent process
-                    // Wait for the child process to finish
-                    if (is_background)
+                    pipe(pipefd);
+                    if(pipefd[0] == -1 || pipefd[1] == -1)
                     {
-                        cout << "[" << job_number++ << "] " << pid_child << endl;
+                        cerr << "Error creating pipe" << endl;
+                        exit(EXIT_FAILURE);
+                    }
+                    shell_command.output_fd = pipefd[1];
+                }
+
+                if (shell_command.command == "exit")
+                {
+                    exit(0);
+                }
+                else if (shell_command.command == "cd")
+                {
+                    if (shell_command.arguments.size() == 1)
+                    {
+                        chdir(getenv("HOME"));
+                    }
+                    else if (shell_command.arguments.size() == 2)
+                    {
+                        chdir(shell_command.arguments[1].c_str());
                     }
                     else
                     {
-                        waitpid(pid_child, NULL, 0);
+                        cerr << "Invalid number of arguments" << endl;
                     }
                 }
-
-                // Reap any completed child processes to avoid zombie processes
-                int status;
-                while (waitpid(-1, &status, WNOHANG) > 0)
+                else if (shell_command.command == "pwd")
                 {
+                    char *current_directory = new char[1];
+                    size_t capacity = 1;
+                    while (!(current_directory = getcwd(current_directory, capacity)))
+                    {
+                        delete[] current_directory;
+                        capacity *= 2;
+                        current_directory = new char[capacity];
+                    }
+                    cout << current_directory << endl;
+                    delete[] current_directory;
+                }
+                else
+                {
+                    // If not, fork a child process and execute the command
+                    pid_t pid_child = fork();
+                    if (pid_child == 0)
+                    {
+                        // Child process
+                        // Execute the command
+                        execute_command(shell_command, is_background);
+                    }
+                    else
+                    {
+                        // Parent process
+                        signal(SIGINT, SIG_IGN);
+                        // Wait for the child process to finish
+                        if (is_background)
+                        {
+                            cout << "[" << job_number++ << "] " << pid_child << endl;
+                        }
+                        else
+                        {
+                            waitpid(pid_child, NULL, 0);
+                        }
+                    }
+
+                    // Reap any completed child processes to avoid zombie processes
+                    int status;
+                    while (waitpid(-1, &status, WNOHANG) > 0)
+                    {
+                    }
                 }
             }
-        }
-        catch (const char *msg)
-        {
-            cerr << msg << endl;
+            catch (const char *msg)
+            {
+                cerr << msg << endl;
+            }
         }
     }
     return 0;
