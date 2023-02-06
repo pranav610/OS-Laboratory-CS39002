@@ -1,5 +1,7 @@
 #include <iostream>
+#include <algorithm>
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <vector>
 #include <unistd.h>
@@ -7,7 +9,6 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
-#define MAX_ARGS 1000
 using namespace std;
 
 class Command
@@ -106,10 +107,11 @@ int execute_command(Command &command, bool background)
     // If the command is found, execute it
     // If the command is not found, print an error message
     // If the command is found, execute it
-    char *args[MAX_ARGS];
+    char **args;
+    args = new char *[command.arguments.size() + 1];
     for (int i = 0; i < command.arguments.size(); i++)
     {
-        args[i] = (char *)command.arguments[i].c_str();
+        args[i] = strdup(command.arguments[i].c_str());
     }
     args[command.arguments.size()] = NULL;
 
@@ -160,7 +162,7 @@ void read_command(string &command)
     while (command[0] == ' ')
         command.erase(0, 1);
     while (command[command.length() - 1] == ' ')
-        command.erase(command.length() - 1, 1);
+        command.pop_back();
 }
 
 int main()
@@ -179,14 +181,14 @@ int main()
 
         try
         {
+            Command shell_command(command);
+
             bool is_background = false;
-            if (command.back() == '&')
+            if(find(shell_command.arguments.begin(), shell_command.arguments.end(), "&") != shell_command.arguments.end())
             {
                 is_background = true;
-                command.pop_back();
+                shell_command.arguments.erase(find(shell_command.arguments.begin(), shell_command.arguments.end(), "&"));
             }
-
-            Command shell_command(command);
 
             // Check if the command is a built-in command
             if (shell_command.command == "exit")
@@ -195,7 +197,11 @@ int main()
             }
             else if (shell_command.command == "cd")
             {
-                if (shell_command.arguments.size() == 2)
+                if(shell_command.arguments.size() == 1)
+                {
+                    chdir(getenv("HOME"));
+                }
+                else if (shell_command.arguments.size() == 2)
                 {
                     chdir(shell_command.arguments[1].c_str());
                 }
