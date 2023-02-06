@@ -167,6 +167,8 @@ void read_command(string &command)
 
 int main()
 {
+    size_t job_number = 1;
+
     while (1)
     {
         shell_prompt();
@@ -184,7 +186,7 @@ int main()
             Command shell_command(command);
 
             bool is_background = false;
-            if(find(shell_command.arguments.begin(), shell_command.arguments.end(), "&") != shell_command.arguments.end())
+            if (find(shell_command.arguments.begin(), shell_command.arguments.end(), "&") != shell_command.arguments.end())
             {
                 is_background = true;
                 shell_command.arguments.erase(find(shell_command.arguments.begin(), shell_command.arguments.end(), "&"));
@@ -197,7 +199,7 @@ int main()
             }
             else if (shell_command.command == "cd")
             {
-                if(shell_command.arguments.size() == 1)
+                if (shell_command.arguments.size() == 1)
                 {
                     chdir(getenv("HOME"));
                 }
@@ -220,7 +222,7 @@ int main()
                     capacity *= 2;
                     current_directory = new char[capacity];
                 }
-                cout<<current_directory<<endl;
+                cout << current_directory << endl;
                 delete[] current_directory;
             }
             else
@@ -237,10 +239,19 @@ int main()
                 {
                     // Parent process
                     // Wait for the child process to finish
-                    if (!is_background)
+                    if(is_background){
+                        cout << "[" << job_number++ << "] " << pid_child << endl;
+                    }
+                    else
                     {
                         waitpid(pid_child, NULL, 0);
                     }
+                }
+
+                // Reap any completed child processes to avoid zombie processes
+                int status;
+                while (waitpid(-1, &status, WNOHANG) > 0)
+                {
                 }
             }
         }
