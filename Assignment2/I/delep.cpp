@@ -1,20 +1,9 @@
-#include <stdio.h>
-#include <string.h>
-#include <dirent.h>
-#include <unistd.h>
-#include <bits/stdc++.h>
-
-int main(int argc, char *argv[])
+void delep(char *path)
 {
-    if (argc != 2) {
-        printf("Usage: %s file\n", argv[0]);
-        return 1;
-    }
-
     DIR *dirp = opendir("/proc");
     if (!dirp) {
         perror("opendir");
-        return 1;
+        exit(1);
     }
 
     std::set<int> pids;
@@ -46,7 +35,7 @@ int main(int argc, char *argv[])
                 continue;
             buf[len] = '\0';
 
-            if (!strcmp(buf, argv[1])){
+            if (!strcmp(buf, path)){
                 printf("PID %s has the file open", entry->d_name);
                 pids.insert(atoi(entry->d_name));
                 char path[1024];
@@ -80,12 +69,15 @@ int main(int argc, char *argv[])
                 kill(*it, SIGKILL);
                 printf("Killed process %d\n", *it);
             }
+            int del = remove(path);
+            if(del==0)
+                printf("Deleted file %s\n", path);
+            else
+                printf("Error deleting file %s\n", path);
         }
         else
         {
             printf("Exiting...\n");
         }
     }
-
-    return 0;
 }
