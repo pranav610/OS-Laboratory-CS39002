@@ -150,6 +150,7 @@ void shell_prompt()
         current_directory = new char[capacity];
     }
     cout << user << "@" << pcname << ":" << current_directory << "$ ";
+    fflush(stdout);
     delete[] current_directory;
     delete[] pcname;
 }
@@ -165,9 +166,25 @@ void read_command(string &command)
         command.pop_back();
 }
 
+void ctrl_c_handler(int signum)
+{
+    cout << endl ;
+    shell_prompt();
+}
+
+void ctrl_z_handler(int signum)
+{
+    signal(SIGTSTP, ctrl_z_handler);
+    cout << endl;
+}
+
 int main()
 {
     size_t job_number = 1;
+
+    // Register the signal handlers
+    signal(SIGINT, ctrl_c_handler);
+    signal(SIGTSTP, ctrl_z_handler);
 
     while (1)
     {
@@ -237,9 +254,11 @@ int main()
                 }
                 else
                 {
+                    signal(SIGINT, SIG_IGN);
                     // Parent process
                     // Wait for the child process to finish
-                    if(is_background){
+                    if (is_background)
+                    {
                         cout << "[" << job_number++ << "] " << pid_child << endl;
                     }
                     else
