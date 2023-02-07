@@ -266,7 +266,7 @@ int main()
                 const string cmd = commands[i];
                 Command shell_command(cmd);
 
-                bool is_background = false;
+                is_background = false;
                 if (shell_command.arguments[shell_command.arguments.size() - 1] == "&")
                 {
                     is_background = true;
@@ -288,7 +288,6 @@ int main()
                     }
                     shell_command.output_fd = pipefd[1];
                 }
-
 
                 // Check if the command is a built-in command
                 if (shell_command.command == "exit")
