@@ -89,6 +89,8 @@ public:
                     arg = glob_result.gl_pathv[i];
                     temp_args.push_back(arg);
                 }
+
+                globfree(&glob_result);
             }else temp_args.push_back(arg);
         }
 
@@ -211,10 +213,6 @@ void ctrl_z_handler(int signum)
 
 
 
-
-
-
-
 int main()
 {
     size_t job_number = 1;
@@ -257,7 +255,6 @@ int main()
             {
 
                 delim_remove(commands[i]);
-                // globbing(commands[i]);
                 const string cmd = commands[i];
                 Command shell_command(cmd);
 
