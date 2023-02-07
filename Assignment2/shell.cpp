@@ -1,14 +1,18 @@
-
 #include <iostream>
 #include <algorithm>
 #include <string>
 #include <cstring>
 #include <sstream>
 #include <vector>
+#include<dirent.h>
+#include<fnmatch.h>
+#include<glob.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+
+#include "delep.h"
 
 using namespace std;
 
@@ -20,7 +24,6 @@ public:
     int input_fd, output_fd;
     string input_file, output_file;
     pid_t pid;
-    bool pipe_mode = false;
 
     Command(const string &cmd) : command(cmd), input_fd(STDIN_FILENO), output_fd(STDOUT_FILENO), input_file(""), output_file(""), pid(-1)
     {
@@ -73,6 +76,25 @@ public:
         // Set the command to the first argument
         command = arguments[0];
 
+        //Handle wildcards
+        vector<string>temp_args;
+        for(auto &arg: arguments)
+        {
+            if(arg.find('*') != string::npos || arg.find('?') != string::npos)
+            {
+                glob_t glob_result;
+                glob(arg.c_str(), GLOB_TILDE, NULL, &glob_result);
+                for(unsigned int i=0; i<glob_result.gl_pathc; ++i)
+                {
+                    arg = glob_result.gl_pathv[i];
+                    temp_args.push_back(arg);
+                }
+            }else temp_args.push_back(arg);
+        }
+
+        arguments.clear();
+        arguments = temp_args;
+
         // Set the input and output file descriptors
         IO_redirection();
     }
@@ -122,7 +144,6 @@ int execute_command(Command &command, bool background)
     dup2(command.input_fd, STDIN_FILENO);
     dup2(command.output_fd, STDOUT_FILENO);
 
-
     // Execute the command
     int ret = execvp(command.command.c_str(), args);
     if (ret == -1)
@@ -154,14 +175,12 @@ void shell_prompt()
         current_directory = new char[capacity];
     }
     cout << user << "@" << pcname << ":" << current_directory << "$ ";
+    fflush(stdout);
     delete[] current_directory;
     delete[] pcname;
 }
-void read_command(string &command)
+void delim_remove(string &command)
 {
-    // Read the command from the user
-    getline(cin, command);
-
     // Remove the starting and ending spaces
     while (command[0] == ' ')
         command.erase(0, 1);
@@ -169,18 +188,40 @@ void read_command(string &command)
         command.pop_back();
 }
 
-void delim_remove(string &command)
+void read_command(string &command)
 {
-       // Remove the starting and ending spaces
-    while (command[0] == ' ')
-        command.erase(0, 1);
-    while (command[command.length() - 1] == ' ')
-        command.pop_back(); 
+    // Read the command from the user
+    getline(cin, command);
+
+    delim_remove(command);
 }
+
+
+void ctrl_c_handler(int signum)
+{
+    cout << endl;
+    shell_prompt();
+}
+
+void ctrl_z_handler(int signum)
+{
+    signal(SIGTSTP, ctrl_z_handler);
+    cout << endl;
+}
+
+
+
+
+
+
 
 int main()
 {
     size_t job_number = 1;
+
+    // Register the signal handlers
+    signal(SIGINT, ctrl_c_handler);
+    signal(SIGTSTP, ctrl_z_handler);
 
     while (1)
     {
@@ -202,10 +243,12 @@ int main()
                 command.erase(0, i + 1);
                 i = 0;
             }
-            else i++; 
+            else
+                i++;
         }
         delim_remove(command);
-        if(command!="")commands.push_back(command);
+        if (command != "")
+            commands.push_back(command);
         int pipefd[2];
         for (int i = 0; i < commands.size(); i++)
         {
@@ -214,6 +257,7 @@ int main()
             {
 
                 delim_remove(commands[i]);
+                // globbing(commands[i]);
                 const string cmd = commands[i];
                 Command shell_command(cmd);
 
@@ -234,7 +278,7 @@ int main()
                 if (i < commands.size() - 1)
                 {
                     pipe(pipefd);
-                    if(pipefd[0] == -1 || pipefd[1] == -1)
+                    if (pipefd[0] == -1 || pipefd[1] == -1)
                     {
                         cerr << "Error creating pipe" << endl;
                         exit(EXIT_FAILURE);
@@ -282,11 +326,24 @@ int main()
                     {
                         // Child process
                         // Execute the command
-                        execute_command(shell_command, is_background);
+                        if (shell_command.command == "delep")
+                        {
+                            if (shell_command.arguments.size() == 2)
+                            {
+                                delep((char *)shell_command.arguments[1].c_str());
+                            }
+                            else
+                            {
+                                cerr << "Invalid number of arguments" << endl;
+                            }
+                        }
+                        else
+                            execute_command(shell_command, is_background);
                     }
                     else
                     {
                         // Parent process
+                        signal(SIGINT, SIG_IGN);
                         // Wait for the child process to finish
                         if (is_background)
                         {
