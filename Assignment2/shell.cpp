@@ -191,7 +191,9 @@ void ctrl_z_handler(int signum)
 void child_signal_handler(int signum)
 {
     int status;
-    waitpid(-1, &status, WNOHANG);
+    pid_t pid=waitpid(-1, &status, WNOHANG);
+    if(pid>0)
+        background_pids.erase(pid);
 }
 
 int main()
