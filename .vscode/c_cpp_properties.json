@@ -3,10 +3,11 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/Assignment2/J"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "/usr/bin/gcc -lreadline",
             "cStandard": "gnu17",
             "cppStandard": "gnu++17",
             "intelliSenseMode": "linux-gcc-x64"

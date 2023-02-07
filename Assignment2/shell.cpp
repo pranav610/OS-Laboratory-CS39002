@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <algorithm>
 #include <string>
@@ -9,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <readline/readline.h>
 
 #include "delep.h"
 // #include "delep.cpp"
@@ -56,7 +56,6 @@ public:
         // Parse the command string into the command and arguments
         stringstream ss(command);
         string arg;
-        int it = 0;
         while (ss >> arg)
         {
             if (arg == "<")
@@ -115,7 +114,8 @@ int execute_command(Command &command, bool background)
     // If the command is found, execute it
     char **args;
     args = new char *[command.arguments.size() + 1];
-    for (int i = 0; i < command.arguments.size(); i++)
+    int nsz = command.arguments.size();
+    for (int i = 0; i < nsz; i++)
     {
         args[i] = strdup(command.arguments[i].c_str());
     }
@@ -160,13 +160,6 @@ void shell_prompt()
     delete[] current_directory;
     delete[] pcname;
 }
-void read_command(string &command)
-{
-    // Read the command from the user
-    getline(cin, command);
-
-    delim_remove(command);
-}
 
 void delim_remove(string &command)
 {
@@ -175,6 +168,19 @@ void delim_remove(string &command)
         command.erase(0, 1);
     while (command[command.length() - 1] == ' ')
         command.pop_back();
+}
+
+void initialize_readline()
+{
+    rl_bind_key('\t', rl_insert);
+}
+
+void read_command(string &command)
+{
+    // Read the command from the user
+    getline(cin, command);
+
+    delim_remove(command);
 }
 
 void ctrl_c_handler(int signum)
@@ -209,7 +215,8 @@ int main()
         }
         vector<string> commands;
         int i = 0;
-        while (i < command.length())
+        int nsz = command.length();
+        while (i < nsz)
         {
             if (command[i] == '|')
             {
@@ -224,7 +231,8 @@ int main()
         if (command != "")
             commands.push_back(command);
         int pipefd[2];
-        for (int i = 0; i < commands.size(); i++)
+        nsz = commands.size();
+        for (int i = 0; i < nsz; i++)
         {
             // Add to history - to be implemented
             try
@@ -248,7 +256,8 @@ int main()
                 {
                     shell_command.input_fd = pipefd[0];
                 }
-                if (i < commands.size() - 1)
+                int nsz = commands.size();
+                if (i < nsz - 1)
                 {
                     pipe(pipefd);
                     if (pipefd[0] == -1 || pipefd[1] == -1)
