@@ -9,11 +9,21 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <readline/readline.h>
 
 #include "delep.h"
-// #include "delep.cpp"
+#include "delep.cpp"
+
+#define label X
 
 using namespace std;
+
+static sigjmp_buf env;
+
+size_t job_number = 1;
+
+bool ctrl_z_flag;
+pid_t background_pid;
 
 class Command
 {
@@ -40,23 +50,11 @@ public:
 
     void parse_command()
     {
-        /*
-         * Need to parse the command string into the command and arguments
-         * Should support-
-         * 1. Run an external command e.g 'cc –o myprog myprog.c'
-         * 2. Run an external command by redirecting standard input from a file './a.out < infile.txt'
-         * 3. Run an external command by redirecting standard output to a file './a.out > outfile.txt'
-         * 4. Combination of input and output redirection './a.out < infile.txt > outfile.txt'
-         * 5. Run an external command in the background with possible input and output redirections './a.out < infile.txt > outfile.txt &'
-         * 6. Run several external commands in the pipe mode 'cat abc.c | sort | more'
-         */
-
         /* Need to do more improvisations here */
 
         // Parse the command string into the command and arguments
         stringstream ss(command);
         string arg;
-        int it = 0;
         while (ss >> arg)
         {
             if (arg == "<")
@@ -111,11 +109,9 @@ int execute_command(Command &command, bool background)
     // Execute the command
     // If the command is not found, print an error message
     // If the command is found, execute it
-    // If the command is not found, print an error message
-    // If the command is found, execute it
     char **args;
     args = new char *[command.arguments.size() + 1];
-    for (int i = 0; i < command.arguments.size(); i++)
+    for (int i = 0; i < (int)command.arguments.size(); i++)
     {
         args[i] = strdup(command.arguments[i].c_str());
     }
@@ -135,7 +131,7 @@ int execute_command(Command &command, bool background)
     return 0;
 }
 
-void shell_prompt()
+string shell_prompt()
 {
     // Print the shell prompt in user@pcname:current_directory$
     char *user = getenv("USER");
@@ -155,17 +151,10 @@ void shell_prompt()
         capacity *= 2;
         current_directory = new char[capacity];
     }
-    cout << user << "@" << pcname << ":" << current_directory << "$ ";
-    fflush(stdout);
+    string prompt = string(user) + "@" + string(pcname) + ":" + string(current_directory) + "$ ";
     delete[] current_directory;
     delete[] pcname;
-}
-void read_command(string &command)
-{
-    // Read the command from the user
-    getline(cin, command);
-
-    delim_remove(command);
+    return prompt;
 }
 
 void delim_remove(string &command)
@@ -179,37 +168,85 @@ void delim_remove(string &command)
 
 void ctrl_c_handler(int signum)
 {
+    if (background_pid == 0)
+    {
+        siglongjmp(env, 42);
+    }
     cout << endl;
-    shell_prompt();
+    kill(background_pid, SIGKILL);
+    background_pid = 0;
 }
 
 void ctrl_z_handler(int signum)
 {
-    signal(SIGTSTP, ctrl_z_handler);
-    cout << endl;
+    if (background_pid == 0)
+    {
+        siglongjmp(env, 42);
+    }
+    cout << endl
+         << "[" << job_number++ << "]+ "
+         << "Stopped" << endl;
+    kill(background_pid, SIGSTOP);
+    ctrl_z_flag = true;
+    background_pid = 0;
+}
+
+void child_signal_handler(int signum)
+{
+    int status;
+    waitpid(-1, &status, WNOHANG);
 }
 
 int main()
 {
-    size_t job_number = 1;
+    char *input;
 
     // Register the signal handlers
-    signal(SIGINT, ctrl_c_handler);
-    signal(SIGTSTP, ctrl_z_handler);
+    struct sigaction sa_int;
+    memset(&sa_int, 0, sizeof(sa_int));
+    sa_int.sa_handler = &ctrl_c_handler;
+    sigaction(SIGINT, &sa_int, NULL);
+
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = &ctrl_z_handler;
+    sigaction(SIGTSTP, &sa, NULL);
+
+    struct sigaction sa_child;
+    memset(&sa_child, 0, sizeof(sa_child));
+    sa_child.sa_handler = &child_signal_handler;
+    sigaction(SIGCHLD, &sa_child, NULL);
 
     while (1)
     {
-        shell_prompt();
+        if (sigsetjmp(env, 1) == 42)
+        {
+            cout << endl;
+            continue;
+        }
 
-        string command;
-        read_command(command);
+        string prompt = shell_prompt();
+        input = readline(prompt.c_str());
+
+        // Exit the shell on CTRL+D
+        if (input == NULL)
+        {
+            cout << "exit" << endl;
+            exit(EXIT_SUCCESS);
+        }
+
+        string command = string(input);
+
+        // Add the command to the history
+
+        delim_remove(command);
         if (command == "")
         {
             continue;
         }
         vector<string> commands;
         int i = 0;
-        while (i < command.length())
+        while (i < (int)command.length())
         {
             if (command[i] == '|')
             {
@@ -224,7 +261,7 @@ int main()
         if (command != "")
             commands.push_back(command);
         int pipefd[2];
-        for (int i = 0; i < commands.size(); i++)
+        for (int i = 0; i < (int)commands.size(); i++)
         {
             // Add to history - to be implemented
             try
@@ -248,7 +285,7 @@ int main()
                 {
                     shell_command.input_fd = pipefd[0];
                 }
-                if (i < commands.size() - 1)
+                if (i < (int)commands.size() - 1)
                 {
                     pipe(pipefd);
                     if (pipefd[0] == -1 || pipefd[1] == -1)
@@ -261,7 +298,8 @@ int main()
 
                 if (shell_command.command == "exit")
                 {
-                    exit(0);
+                    cout << "exit" << endl;
+                    exit(EXIT_SUCCESS);
                 }
                 else if (shell_command.command == "cd")
                 {
@@ -294,8 +332,8 @@ int main()
                 else
                 {
                     // If not, fork a child process and execute the command
-                    pid_t pid_child = fork();
-                    if (pid_child == 0)
+                    background_pid = fork();
+                    if (background_pid == 0)
                     {
                         // Child process
                         // Execute the command
@@ -316,22 +354,19 @@ int main()
                     else
                     {
                         // Parent process
-                        signal(SIGINT, SIG_IGN);
-                        // Wait for the child process to finish
                         if (is_background)
                         {
-                            cout << "[" << job_number++ << "] " << pid_child << endl;
+                            cout << "[" << job_number++ << "]"
+                                 << " " << background_pid << endl;
                         }
-                        else
+                        if ((!ctrl_z_flag) && (!is_background))
                         {
-                            waitpid(pid_child, NULL, 0);
+                            // Wait for the child process to complete
+                            int status;
+                            waitpid(background_pid, &status, WUNTRACED);
                         }
-                    }
-
-                    // Reap any completed child processes to avoid zombie processes
-                    int status;
-                    while (waitpid(-1, &status, WNOHANG) > 0)
-                    {
+                        ctrl_z_flag = false;
+                        background_pid = 0;
                     }
                 }
             }
