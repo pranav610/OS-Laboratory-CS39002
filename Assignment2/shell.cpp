@@ -328,7 +328,7 @@ int main()
                 else
                 {
                     // If not, fork a child process and execute the command
-                    pid_t foreground_pid = fork();
+                    foreground_pid = fork();
                     if (foreground_pid == 0)
                     {
                         // Child process
