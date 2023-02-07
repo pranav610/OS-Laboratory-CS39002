@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <algorithm>
 #include <string>
@@ -14,16 +13,15 @@
 #include "delep.h"
 #include "delep.cpp"
 
-#define label X
-
 using namespace std;
 
 static sigjmp_buf env;
 
 size_t job_number = 1;
 
-bool ctrl_z_flag;
-pid_t background_pid;
+bool is_background;
+pid_t foreground_pid;
+set<pid_t> background_pids;
 
 class Command
 {
@@ -94,7 +92,7 @@ public:
         // Open the output file for writing, creating it if it does not exist
         if (!output_file.empty())
         {
-            output_fd = open(output_file.c_str(), O_WRONLY | O_CREAT, 0644);
+            output_fd = open(output_file.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0666);
             if (output_fd == -1)
             {
                 cerr << "Error opening output file: " << output_file << endl;
@@ -168,27 +166,26 @@ void delim_remove(string &command)
 
 void ctrl_c_handler(int signum)
 {
-    if (background_pid == 0)
+    if (foreground_pid == 0)
     {
         siglongjmp(env, 42);
     }
     cout << endl;
-    kill(background_pid, SIGKILL);
-    background_pid = 0;
+    kill(foreground_pid, SIGKILL);
+    foreground_pid = 0;
 }
 
 void ctrl_z_handler(int signum)
 {
-    if (background_pid == 0)
+    if (foreground_pid == 0)
     {
         siglongjmp(env, 42);
     }
     cout << endl
-         << "[" << job_number++ << "]+ "
-         << "Stopped" << endl;
-    kill(background_pid, SIGSTOP);
-    ctrl_z_flag = true;
-    background_pid = 0;
+         << "[" << job_number++ << "]+ Stopped " << endl;
+    kill(foreground_pid, SIGSTOP);
+    background_pids.insert(foreground_pid);
+    foreground_pid = 0;
 }
 
 void child_signal_handler(int signum)
@@ -263,24 +260,20 @@ int main()
         int pipefd[2];
         for (int i = 0; i < (int)commands.size(); i++)
         {
-            // Add to history - to be implemented
             try
             {
-
                 delim_remove(commands[i]);
                 const string cmd = commands[i];
                 Command shell_command(cmd);
 
                 bool is_background = false;
-                if (find(shell_command.arguments.begin(), shell_command.arguments.end(), "&") != shell_command.arguments.end())
+                if (shell_command.arguments[shell_command.arguments.size() - 1] == "&")
                 {
                     is_background = true;
-                    shell_command.arguments.erase(find(shell_command.arguments.begin(), shell_command.arguments.end(), "&"));
+                    shell_command.arguments.pop_back();
                 }
 
-                // Check if the command is a built-in command
-
-                // pipe
+                // Pipe the output of one command to the input of the next
                 if (i > 0)
                 {
                     shell_command.input_fd = pipefd[0];
@@ -296,6 +289,8 @@ int main()
                     shell_command.output_fd = pipefd[1];
                 }
 
+
+                // Check if the command is a built-in command
                 if (shell_command.command == "exit")
                 {
                     cout << "exit" << endl;
@@ -326,14 +321,15 @@ int main()
                         capacity *= 2;
                         current_directory = new char[capacity];
                     }
-                    cout << current_directory << endl;
+                    write(shell_command.output_fd, current_directory, strlen(current_directory));
+                    write(shell_command.output_fd, "\n", 1);
                     delete[] current_directory;
                 }
                 else
                 {
                     // If not, fork a child process and execute the command
-                    background_pid = fork();
-                    if (background_pid == 0)
+                    pid_t foreground_pid = fork();
+                    if (foreground_pid == 0)
                     {
                         // Child process
                         // Execute the command
@@ -356,17 +352,13 @@ int main()
                         // Parent process
                         if (is_background)
                         {
-                            cout << "[" << job_number++ << "]"
-                                 << " " << background_pid << endl;
+                            background_pids.insert(foreground_pid);
                         }
-                        if ((!ctrl_z_flag) && (!is_background))
+                        else
                         {
-                            // Wait for the child process to complete
-                            int status;
-                            waitpid(background_pid, &status, WUNTRACED);
+                            waitpid(foreground_pid, NULL, 0);
                         }
-                        ctrl_z_flag = false;
-                        background_pid = 0;
+                        foreground_pid = 0;
                     }
                 }
             }
