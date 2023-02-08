@@ -11,11 +11,12 @@ using namespace std;
 
 int main() {
   // signal(SIGINT, ctrl_c_handler);
-
+  int n;
   while (1) {
-    cout << "$ ";
-    string str;
-    cin>>str;
+    sleep(1);
+    cout << "$\n";
+    // string str;
+    // cin>>str;
   }
 
   return 0;

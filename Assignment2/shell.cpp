@@ -19,7 +19,7 @@ static sigjmp_buf env;
 
 size_t job_number = 1;
 
-bool is_background;
+volatile bool is_background;
 pid_t foreground_pid;
 set<pid_t> background_pids;
 
@@ -183,7 +183,7 @@ void ctrl_z_handler(int signum)
     }
     cout << endl
          << "[" << job_number++ << "]+ Stopped " << endl;
-    kill(foreground_pid, SIGSTOP);
+    kill(foreground_pid, SIGCONT);
     background_pids.insert(foreground_pid);
     foreground_pid = 0;
 }

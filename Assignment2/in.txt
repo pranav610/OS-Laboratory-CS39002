@@ -1,2 +1,14 @@
-Hello
-sidharth/Desktop/OS-Laboratory-CS39002/Assignment2
+createlock
+createlock.cpp
+delep.cpp
+delep.h
+in.txt
+main
+main.cpp
+nolock
+nolock.cpp
+OSlab-Asgn2-shell-design-2023-part-1-part-2.pdf
+shell
+shell.cpp
+test
+test.cpp
