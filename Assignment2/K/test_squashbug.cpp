@@ -1,4 +1,4 @@
-#include "malware.hpp"
+#include "squashbug.hpp"
 
 int main()
 {   
