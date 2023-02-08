@@ -19,7 +19,7 @@
 using namespace std;
 
 typedef map<string, string> statusMap;
-typedef map<int, statusMap> pidMap;
+typedef map<int, statusMap> pid_Map;
 #define SLEEP_DUR_MIN 2
 #define NUM_CHILD 5
 #define NUM_CHILD_CHILD 10
@@ -27,13 +27,13 @@ typedef map<int, statusMap> pidMap;
 class squashbug
 {
     public:
-        squashbug(int, bool);
+        squashbug(pid_t, bool);
         ~squashbug();
         void run();
     private:
-        pid_t pid;
+        pid_t sbpid;
         bool suggest;
-        pidMap pidMap;
+        pid_Map pidMap;
         int countChildren(pid_t);
         void returnChildren(pid_t, set<int>&);
 };

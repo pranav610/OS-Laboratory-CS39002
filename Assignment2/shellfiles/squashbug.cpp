@@ -1,7 +1,7 @@
 #include "squashbug.hpp"
 
-squashbug::squashbug(int pid, bool suggest = false) : pid(pid), suggest(suggest)
-{
+squashbug::squashbug(pid_t pid, bool suggest) : sbpid(pid), suggest(suggest)
+{   
     DIR *dirp = opendir("/proc");
     if (!dirp)
     {
@@ -26,13 +26,13 @@ squashbug::squashbug(int pid, bool suggest = false) : pid(pid), suggest(suggest)
             std::istringstream is_line(line);
             std::string key;
             if (std::getline(is_line, key, ':'))
-            {
+            {   
                 std::string value;
                 if (std::getline(is_line, value))
                     statusValues[key] = value;
             }
         }
-        pidMap[pid] = statusValues;
+        pidMap[atoi(entry->d_name)] = statusValues;
     }
     closedir(dirp);
 }
@@ -40,26 +40,6 @@ squashbug::squashbug(int pid, bool suggest = false) : pid(pid), suggest(suggest)
 squashbug::~squashbug()
 {
 }
-
-// void getstatus(pid_t pid, statusMap &statusValues)
-// {
-//     char statusFile[100];
-//     sprintf(statusFile, "/proc/%d/status", pid);
-//     std::ifstream fileStream;
-//     fileStream.open(statusFile);
-//     std::string line;
-//     while (std::getline(fileStream, line))
-//     {
-//         std::istringstream is_line(line);
-//         std::string key;
-//         if (std::getline(is_line, key, ':'))
-//         {
-//             std::string value;
-//             if (std::getline(is_line, value))
-//                 statusValues[key] = value;
-//         }
-//     }
-// }
 
 void squashbug::returnChildren(pid_t pid, set<int> &pids)
 {   
@@ -88,11 +68,17 @@ int squashbug::countChildren(pid_t pid)
 }
 
 void squashbug::run()
-{
+{   
     int count = 3;
     pid_t pids[3];
 
-    pids[0] = pid;
+    if(pidMap.find(sbpid) == pidMap.end())
+    {
+        printf("PID %d not found\n", sbpid);
+        return;
+    }
+
+    pids[0] = sbpid;
     pids[1] = atoi(pidMap[pids[0]]["PPid"].c_str());
     if (pids[1] == 0)
         count--;

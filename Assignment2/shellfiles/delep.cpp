@@ -1,8 +1,4 @@
-#include<cstdio>
-#include<cstring>
-#include<dirent.h>
-#include<unistd.h>
-#include<bits/stdc++.h>
+#include "delep.hpp"
 
 void delep(char *argpath)
 {

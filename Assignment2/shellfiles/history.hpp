@@ -6,8 +6,8 @@
 #include <deque>
 #include <string>
 
-#define HISTORY_FILE "history.txt"
-#define MAX_SIZE 5
+#define HISTORY_FILE ".history"
+#define MAX_SIZE 1000
 
 using namespace std;
 

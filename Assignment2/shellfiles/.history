@@ -1,0 +1,22 @@
+./test
+sb 65730 --suggest
+sb 65730 --suggest
+sb 65754 --suggest
+exit
+sb
+sb 2432 --suggest
+exit
+sb 66281 --suggest
+sb 66277 --suggest
+exit
+sb 2432 --suggest
+exit
+sb 1854
+exit
+sb 67179 --suggest
+exit
+sb 67651 --suggest
+exit
+sb 68052 --suggest
+sb 68015 --suggest
+sb 68018 --suggest
