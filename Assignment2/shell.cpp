@@ -170,6 +170,7 @@ void ctrl_c_handler(int signum)
     {
         siglongjmp(env, 42);
     }
+    cout<<"pid : "<<foreground_pid<<endl;
     cout << endl;
     kill(foreground_pid, SIGKILL);
     foreground_pid = 0;
@@ -182,7 +183,7 @@ void ctrl_z_handler(int signum)
         siglongjmp(env, 42);
     }
     cout << endl
-         << "[" << job_number++ << "]+ Stopped " << endl;
+         << "[" << job_number++ << "] " << foreground_pid << endl;
     kill(foreground_pid, SIGCONT);
     background_pids.insert(foreground_pid);
     foreground_pid = 0;
@@ -333,6 +334,13 @@ int main()
                     if (foreground_pid == 0)
                     {
                         // Child process
+                        
+                        // Register the signal handlers
+                        struct sigaction sa_int;
+                        memset(&sa_int, 0, sizeof(sa_int));
+                        sa_int.sa_handler = SIG_IGN;
+                        sigaction(SIGINT, &sa_int, NULL);
+
                         // Execute the command
                         if (shell_command.command == "delep")
                         {
@@ -357,7 +365,7 @@ int main()
                         }
                         else
                         {
-                            waitpid(foreground_pid, NULL, 0);
+                            waitpid(foreground_pid, NULL, WUNTRACED);
                         }
                         foreground_pid = 0;
                     }
