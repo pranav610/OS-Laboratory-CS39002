@@ -1,7 +1,7 @@
 #include "delep.hpp"
 
-void delep(char *argpath)
-{
+void delep(char *argpath, int fd)
+{   
     DIR *dirp = opendir("/proc");
     if (!dirp) {
         perror("opendir");
@@ -9,6 +9,7 @@ void delep(char *argpath)
     }
 
     std::set<int> pids;
+    string msgPIDS = "";
 
     struct dirent *entry;
     char path[1024];
@@ -36,50 +37,59 @@ void delep(char *argpath)
             if (len == -1)
                 continue;
             buf[len] = '\0';
-
+            
             if (!strcmp(buf, argpath)){
-                printf("PID %s has the file open", entry->d_name);
+                // printf("PID %s has the file open", entry->d_name);
+                cerr << "PID " << entry->d_name << " has the file open" << endl;
                 pids.insert(atoi(entry->d_name));
                 char path[1024];
                 sprintf(path, "/proc/%s/fdinfo/%s", entry->d_name, fd_entry->d_name);
                 FILE *fptemp = fopen(path, "r");
                 char line[1024];
+                bool lock = false;
                 while(fgets(line, sizeof(line), fptemp)){
                     if(strcmp(strtok(line, ":"), "lock")==0){
-                        printf("----%s", line);
+                        // printf("----%s", line);
+                        lock = true;
                     }
                 }
+                if(lock) 
+                    msgPIDS += "Lock:" + string(entry->d_name) + ",";
+                else
+                    msgPIDS += "NoLock:" + string(entry->d_name) + ",";
                 fclose(fptemp);
-                printf("\n");
+                // printf("\n");
             }
         }
         closedir(fd_dirp);
     }
     closedir(dirp);
-    if(pids.size()==0)
-        printf("No process has the file open\n");
-    else
-    {
-        // kill all the pids using the file
-        printf("Are you want to kill all the processes using the file? (y/n): ");
-        char ch;
-        ch = getchar();
-        getchar();
-        if(ch=='y' || ch=='Y' || ch=='\n')
-        {
-            for(auto it = pids.begin(); it!=pids.end(); it++){
-                kill(*it, SIGKILL);
-                printf("Killed process %d\n", *it);
-            }
-            int del = remove(argpath);
-            if(del==0)
-                printf("Deleted file %s\n", argpath);
-            else
-                printf("Error deleting file %s\n", argpath);
-        }
-        else
-        {
-            printf("Exiting...\n");
-        }
-    }
+    cerr << msgPIDS << endl;
+    write(fd, msgPIDS.c_str(), msgPIDS.length()+1);
+    // if(pids.size()==0)
+    //     printf("No process has the file open\n");
+    // else
+    // {
+    //     // kill all the pids using the file
+    //     printf("Are you want to kill all the processes using the file? (y/n): ");
+    //     char ch;
+    //     ch = getchar();
+    //     getchar();
+    //     if(ch=='y' || ch=='Y' || ch=='\n')
+    //     {
+    //         for(auto it = pids.begin(); it!=pids.end(); it++){
+    //             kill(*it, SIGKILL);
+    //             printf("Killed process %d\n", *it);
+    //         }
+    //         int del = remove(argpath);
+    //         if(del==0)
+    //             printf("Deleted file %s\n", argpath);
+    //         else
+    //             printf("Error deleting file %s\n", argpath);
+    //     }
+    //     else
+    //     {
+    //         printf("Exiting...\n");
+    //     }
+    // }
 }

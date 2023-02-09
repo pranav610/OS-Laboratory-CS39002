@@ -6,6 +6,7 @@
 
 int main()
 {	
+    printf("PID: %d\n", getpid());
     FILE *fp = fopen("lock.txt", "w");
     int fd = fileno(fp);
     int ret = flock(fd, LOCK_EX);

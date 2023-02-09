@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-int main(){
-    // open a file with flock and start wrting to it
-    flockfile(stdout);
+int main(int argc, char * argv[]){
+    printf("%d\n", argc);
+    printf("%s\n", argv[0]);
 
 }

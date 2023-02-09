@@ -10,11 +10,11 @@
 #include <fcntl.h>
 #include <glob.h>
 #include <readline/readline.h>
+#include <ext/stdio_filebuf.h>
 
 #include "delep.hpp"
 #include "history.hpp"
 #include "squashbug.hpp"
-
 
 using namespace std;
 
@@ -103,7 +103,7 @@ public:
                 int ret = glob(arg.c_str(), GLOB_TILDE, NULL, &glob_result);
                 if (ret != 0)
                 {
-                    cerr<<"No such file or directory";
+                    cerr << "No such file or directory";
                     fflush(stdout);
                     siglongjmp(env, 42);
                 }
@@ -218,13 +218,13 @@ void delim_remove(string &command)
 }
 
 history h;
-char *curr_line = (char *) NULL;
+char *curr_line = (char *)NULL;
 
 static int key_up_arrow(int count, int key)
 {
     if (count == 0)
         return 0;
-    if(h.curr_ind == h.get_size())
+    if (h.curr_ind == h.get_size())
         curr_line = strdup(rl_line_buffer);
     h.decrement_history();
     string line = h.get_curr();
@@ -237,7 +237,7 @@ static int key_down_arrow(int count, int key)
 {
     if (count == 0)
         return 0;
-    if(h.curr_ind == h.get_size())
+    if (h.curr_ind == h.get_size())
         curr_line = strdup(rl_line_buffer);
     h.increment_history();
     if (h.curr_ind < h.get_size())
@@ -347,10 +347,9 @@ int main()
             exit(EXIT_SUCCESS);
         }
 
-
         string command = string(input);
         free(input);
-        input = (char *) NULL;
+        input = (char *)NULL;
 
         // Add the command to the history
 
@@ -446,6 +445,8 @@ int main()
                 else
                 {
                     // If not, fork a child process and execute the command
+                    int pipefddp[2];
+                    pipe(pipefddp);
                     foreground_pid = fork();
                     if (foreground_pid == 0)
                     {
@@ -462,7 +463,11 @@ int main()
                         {
                             if (shell_command.arguments.size() == 2)
                             {
-                                delep((char *)shell_command.arguments[1].c_str());
+                                // backup stdout
+                                // close(pipefddp[0]);
+                                // close(1);
+                                // dup(pipefddp[1]);
+                                delep((char *)shell_command.arguments[1].c_str(), pipefddp[1]);
                             }
                             else
                             {
@@ -472,14 +477,14 @@ int main()
                         else if (shell_command.command == "sb")
                         {
                             printf("sb\n");
-                            if((int)shell_command.arguments.size() >  3 || (int)shell_command.arguments.size() == 1)
+                            if ((int)shell_command.arguments.size() > 3 || (int)shell_command.arguments.size() == 1)
                             {
                                 cerr << "Invalid number of arguments" << endl;
                             }
                             else if ((int)shell_command.arguments.size() == 3)
-                            {   
-                                auto itt = find(shell_command.arguments.begin(), shell_command.arguments.end(), "--suggest");
-                                if(itt != shell_command.arguments.end())
+                            {
+                                auto itt = find(shell_command.arguments.begin(), shell_command.arguments.end(), "-suggest");
+                                if (itt != shell_command.arguments.end())
                                 {
                                     shell_command.arguments.erase(itt);
                                     squashbug sb(atoi(shell_command.arguments[1].c_str()), true);
@@ -496,7 +501,7 @@ int main()
                                 sb.run();
                             }
                         }
-                        else if(execute_command(shell_command, is_background)<0)
+                        else if (execute_command(shell_command, is_background) < 0)
                         {
                             exit(EXIT_FAILURE);
                         }
@@ -507,14 +512,84 @@ int main()
                         // Parent process
                         if (is_background)
                         {
-                            cout<<"["<<job_number++<<"] "<<foreground_pid<<endl;
+                            cout << "[" << job_number++ << "] " << foreground_pid << endl;
                             background_pids.insert(foreground_pid);
                         }
                         else
                         {
                             waitpid(foreground_pid, NULL, WUNTRACED);
+                            if (shell_command.command == "delep")
+                            {
+                                cout << "Parent: " << endl;
+                                // backup stdin
+                                // int backup_stdin = dup(0);
+
+                                // // create c++ stream using give file descriptor
+                                // __gnu_cxx::stdio_filebuf<char> filebuf(pipefddp[0], std::ios::in); // 1
+                                // istream is(&filebuf);
+
+                                // close(0);
+                                // close(pipefddp[1]);
+                                // dup(pipefddp[0]);
+
+                                char mehta[1024];
+                                read(pipefddp[0], mehta, 1024);
+                                cout << mehta << endl;
+
+                                // string pids;
+                                // set<int> pids_set_nolock;
+                                // set<int> pids_set_lock;
+                                // // open file with given file descriptor
+                                // // FILE *fp = fdopen(pipefddp[0], "r");
+                                // while (getline(cin, pids))
+                                // {
+                                //     // getline(fp, pids);
+                                //     if (pids.size() > 0)
+                                //     {
+                                //         cout << "MILA non null\n";
+                                //     }
+                                //     cout << pids << endl;
+                                //     istringstream is_line1(pids);
+                                //     string entry;
+                                //     // 1010, 1011, 1012,
+                                //     while (getline(is_line1, entry, ','))
+                                //     {
+                                //         istringstream is_line2(entry);
+                                //         string type;
+                                //         getline(is_line2, type, ':');
+                                //         if (type == "Lock")
+                                //         {
+                                //             string pidin;
+                                //             if (getline(is_line2, pidin))
+                                //                 pids_set_lock.insert(atoi(pidin.c_str()));
+                                //         }
+                                //         else if (type == "NoLock")
+                                //         {
+                                //             string pidin;
+                                //             if (getline(is_line2, pidin))
+                                //                 pids_set_nolock.insert(atoi(pidin.c_str()));
+                                //         }
+                                //     }
+                                    
+                                    
+
+                                //     cout << "Following PIDs have opened the given file in lock mode: " << endl;
+                                //     for (auto itr = pids_set_lock.begin(); itr != pids_set_lock.end(); itr++)
+                                //     {
+                                //         cout << *itr << endl;
+                                //     }
+                                //     cout << "Following PIDs have opened the given file in normal mode: " << endl;
+                                //     for (auto itr = pids_set_nolock.begin(); itr != pids_set_nolock.end(); itr++)
+                                //     {
+                                //         cout << *itr << endl;
+                                //     }
+                                // }
+                                // restore stdin
+                                // close(0);
+                                // dup(backup_stdin);
+                            }
+                            foreground_pid = 0;
                         }
-                        foreground_pid = 0;
                     }
                 }
             }
