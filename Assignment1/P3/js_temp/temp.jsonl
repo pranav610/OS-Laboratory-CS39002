@@ -1,0 +1,18 @@
+{
+"roll": "36",
+"name": "Micheal",
+"batch": 29,
+"dept": ["CSE", "ECE"]
+}
+{
+"roll": "3,5,7",
+"name": "Lisa",
+"batch": 34,
+"dept": ["CSE", "MA"]
+}
+{
+"roll": "1",
+"name": "John",
+"batch": 22,
+"dept": ["MnC", "ECE"]
+}

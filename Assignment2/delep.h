@@ -1,1 +1,0 @@
-void delep(char*path);
