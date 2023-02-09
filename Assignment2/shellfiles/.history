@@ -136,3 +136,9 @@ delep /home/pranav/KGP/OS/OS-Laboratory-CS39002/Assignment2/shellfiles/lock.txt
 delep /home/pranav/KGP/OS/OS-Laboratory-CS39002/Assignment2/shellfiles/lock.txt
 delep /home/pranav/KGP/OS/OS-Laboratory-CS39002/Assignment2/shellfiles/lock.txt
 delep /home/pranav/KGP/OS/OS-Laboratory-CS39002/Assignment2/shellfiles/lock.txt
+sb 17563 -suggest
+exit
+sb 18181 -suggest
+exit
+sb 18548 -suggest
+exit

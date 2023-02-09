@@ -463,10 +463,6 @@ int main()
                         {
                             if (shell_command.arguments.size() == 2)
                             {
-                                // backup stdout
-                                // close(pipefddp[0]);
-                                // close(1);
-                                // dup(pipefddp[1]);
                                 delep((char *)shell_command.arguments[1].c_str(), pipefddp[1]);
                             }
                             else
@@ -550,28 +546,9 @@ int main()
                                     perror("read");
                                     exit(EXIT_FAILURE);
                                 }
-
                                 pids += bufff;
-
-                                // cout << bufff << endl;
-                                // cout << pids << endl;
-
-                                // string pids;
-                                // set<int> pids_set_nolock;
-                                // set<int> pids_set_lock;
-                                // // open file with given file descriptor
-                                // // FILE *fp = fdopen(pipefddp[0], "r");
-                                // while (getline(cin, pids))
-                                // {
-                                //     // getline(fp, pids);
-                                //     if (pids.size() > 0)
-                                //     {
-                                //         cout << "MILA non null\n";
-                                //     }
-                                //     cout << pids << endl;
                                 istringstream is_line1(pids);
                                 string entry;
-                                // 1010, 1011, 1012,
                                 while (getline(is_line1, entry, ','))
                                 {
                                     istringstream is_line2(entry);
@@ -631,10 +608,6 @@ int main()
                                         printf("Exiting...\n");
                                     }
                                 }
-                                // }
-                                // restore stdin
-                                // close(0);
-                                // dup(backup_stdin);
                             }
                             foreground_pid = 0;
                         }
