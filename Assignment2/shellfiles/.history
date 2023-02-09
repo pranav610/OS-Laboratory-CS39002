@@ -1,22 +1,42 @@
+exit
+exit
+ppppioj
+fghj09709
+exit
 ./test
-sb 65730 --suggest
-sb 65730 --suggest
-sb 65754 --suggest
+./test &
+./test &
+ps
+ps
+./test
+ps
+./test
+ps
+./test
+ps
+ps
+kill -9 28743
+ps
+kill -9 28762
+ps
+kill -9 28968
+ps
+kill -9 29081
+ps
 exit
-sb
-sb 2432 --suggest
+./test &
+fg
+ps
+kill -9 29766
+ps
+./test
+./t
+./test &
+ps
+kill -9 30110
+ps
+kill -9 30205
+ps
+ps
 exit
-sb 66281 --suggest
-sb 66277 --suggest
-exit
-sb 2432 --suggest
-exit
-sb 1854
-exit
-sb 67179 --suggest
-exit
-sb 67651 --suggest
-exit
-sb 68052 --suggest
-sb 68015 --suggest
-sb 68018 --suggest
+s

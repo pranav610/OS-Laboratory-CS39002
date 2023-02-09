@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <glob.h>
 #include <readline/readline.h>
 #include <readline/readline.h>
 
@@ -25,21 +26,6 @@ size_t job_number = 1;
 volatile bool is_background;
 pid_t foreground_pid;
 set<pid_t> background_pids;
-
-class demo{
-    public:
-        demo(){
-            cout << "demo constructor" << endl;
-        }
-        demo(const demo &d){
-            cout << "demo copy constructor" << endl;
-        }
-        ~demo(){
-            cout << "demo destructor" << endl;
-        }
-};
-
-demo Delhio;
 
 class Command
 {
@@ -71,24 +57,74 @@ public:
         // Parse the command string into the command and arguments
         stringstream ss(command);
         string arg;
+        string temp = "";
+        bool backslash = false;
         while (ss >> arg)
         {
             if (arg == "<")
             {
                 ss >> input_file;
+                backslash = false;
             }
             else if (arg == ">")
             {
                 ss >> output_file;
+                backslash = false;
+            }
+            else if (arg[arg.size() - 1] == '\\')
+            {
+                temp = temp + arg;
+                temp[temp.size() - 1] = ' ';
+                backslash = true;
             }
             else
             {
-                arguments.push_back(arg);
+                if (backslash)
+                {
+                    temp = temp + arg;
+                    arguments.push_back(temp);
+                    temp = "";
+                    backslash = false;
+                }
+                else
+                    arguments.push_back(arg);
             }
         }
 
         // Set the command to the first argument
         command = arguments[0];
+
+        // //Handle wildcards
+        vector<string> temp_args;
+        for (auto &arg : arguments)
+        {
+            if (arg.find('*') != string::npos || arg.find('?') != string::npos)
+            {
+                glob_t glob_result;
+                int ret = glob(arg.c_str(), GLOB_TILDE, NULL, &glob_result);
+                if (ret != 0)
+                {
+                    cerr<<"No such file or directory";
+                    fflush(stdout);
+                    siglongjmp(env, 42);
+                }
+                else
+                {
+                    for (unsigned int i = 0; i < glob_result.gl_pathc; ++i)
+                    {
+                        arg = glob_result.gl_pathv[i];
+                        temp_args.push_back(arg);
+                    }
+
+                    globfree(&glob_result);
+                }
+            }
+            else
+                temp_args.push_back(arg);
+        }
+
+        arguments.clear();
+        arguments = temp_args;
 
         // Set the input and output file descriptors
         IO_redirection();
@@ -182,19 +218,6 @@ void delim_remove(string &command)
         command.pop_back();
 }
 
-void initialize_readline()
-{
-    rl_bind_key('\t', rl_insert);
-}
-
-void read_command(string &command)
-{
-    // Read the command from the user
-    getline(cin, command);
-
-    delim_remove(command);
-}
-
 history h;
 char *curr_line = (char *) NULL;
 
@@ -215,6 +238,8 @@ static int key_down_arrow(int count, int key)
 {
     if (count == 0)
         return 0;
+    if(h.curr_ind == h.get_size())
+        curr_line = strdup(rl_line_buffer);
     h.increment_history();
     if (h.curr_ind < h.get_size())
     {
@@ -252,7 +277,6 @@ void ctrl_c_handler(int signum)
     {
         siglongjmp(env, 42);
     }
-    cout<<"pid : "<<foreground_pid<<endl;
     cout << endl;
     kill(foreground_pid, SIGKILL);
     foreground_pid = 0;
@@ -274,8 +298,8 @@ void ctrl_z_handler(int signum)
 void child_signal_handler(int signum)
 {
     int status;
-    pid_t pid=waitpid(-1, &status, WNOHANG);
-    if(pid>0)
+    pid_t pid = waitpid(-1, &status, WNOHANG);
+    if (pid > 0)
         background_pids.erase(pid);
 }
 
@@ -288,6 +312,7 @@ int main()
     rl_bind_keyseq("\\e[B", key_down_arrow);
     rl_bind_keyseq("\\C-a", key_ctrl_a);
     rl_bind_keyseq("\\C-e", key_ctrl_e);
+    rl_bind_key('\t', rl_insert);
 
     // Register the signal handlers
     struct sigaction sa_int;
@@ -323,7 +348,6 @@ int main()
             exit(EXIT_SUCCESS);
         }
 
-        h.add_history(input);
 
         string command = string(input);
         free(input);
@@ -336,6 +360,7 @@ int main()
         {
             continue;
         }
+        h.add_history(command);
         vector<string> commands;
         int i = 0;
         while (i < (int)command.length())
@@ -426,7 +451,7 @@ int main()
                     if (foreground_pid == 0)
                     {
                         // Child process
-                        
+
                         // Register the signal handlers
                         struct sigaction sa_int;
                         memset(&sa_int, 0, sizeof(sa_int));
@@ -483,6 +508,7 @@ int main()
                         // Parent process
                         if (is_background)
                         {
+                            cout<<"["<<job_number++<<"] "<<foreground_pid<<endl;
                             background_pids.insert(foreground_pid);
                         }
                         else
