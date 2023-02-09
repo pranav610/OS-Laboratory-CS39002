@@ -10,7 +10,6 @@
 #include <fcntl.h>
 #include <glob.h>
 #include <readline/readline.h>
-#include <readline/readline.h>
 
 #include "delep.hpp"
 #include "history.hpp"
