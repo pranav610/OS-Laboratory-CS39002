@@ -520,32 +520,20 @@ int main()
                             waitpid(foreground_pid, NULL, WUNTRACED);
                             if (shell_command.command == "delep")
                             {
-                                cout << "Parent: " << endl;
-                                // backup stdin
-                                // int backup_stdin = dup(0);
-
-                                // // create c++ stream using give file descriptor
-                                // __gnu_cxx::stdio_filebuf<char> filebuf(pipefddp[0], std::ios::in); // 1
-                                // istream is(&filebuf);
-
-                                // close(0);
-                                // close(pipefddp[1]);
-                                // dup(pipefddp[0]);
-
                                 string pids = "";
                                 set<int> pids_set_nolock;
                                 set<int> pids_set_lock;
-                                char mehta[1024];
-                                memset(mehta, 0, 1024);
+                                char bufff[1024];
+                                memset(bufff, 0, 1024);
                                 int nread;
-                                nread = read(pipefddp[0], mehta, 1024);
+                                nread = read(pipefddp[0], bufff, 1024);
                                 if (nread > 0)
                                 {
-                                    while (mehta[nread - 1] != '\0')
+                                    while (bufff[nread - 1] != '\0')
                                     {
-                                        pids += mehta;
-                                        memset(mehta, 0, 1024);
-                                        nread = read(pipefddp[0], mehta, 1024);
+                                        pids += bufff;
+                                        memset(bufff, 0, 1024);
+                                        nread = read(pipefddp[0], bufff, 1024);
                                         if (nread == 0)
                                         {
                                             break;
@@ -563,10 +551,10 @@ int main()
                                     exit(EXIT_FAILURE);
                                 }
 
-                                pids += mehta;
+                                pids += bufff;
 
-                                cout << mehta << endl;
-                                cout << pids << endl;
+                                // cout << bufff << endl;
+                                // cout << pids << endl;
 
                                 // string pids;
                                 // set<int> pids_set_nolock;
@@ -603,36 +591,37 @@ int main()
                                     }
                                 }
 
-                                cout << "Following PIDs have opened the given file in lock mode: " << endl;
-                                for (auto itr = pids_set_lock.begin(); itr != pids_set_lock.end(); itr++)
-                                {
-                                    cout << *itr << endl;
-                                }
-                                cout << "Following PIDs have opened the given file in normal mode: " << endl;
-                                for (auto itr = pids_set_nolock.begin(); itr != pids_set_nolock.end(); itr++)
-                                {
-                                    cout << *itr << endl;
-                                }
-
                                 // append two sets into one
-                                pids_set_lock.insert(pids_set_nolock.begin(), pids_set_nolock.end());
+                                set<int> pids_combined(pids_set_lock.begin(), pids_set_lock.end());
+                                pids_combined.insert(pids_set_nolock.begin(), pids_set_nolock.end());
 
-                                if((int)pids_set_lock.size()==0)
+                                if ((int)pids_combined.size() == 0)
                                     printf("No process has the file open\n");
                                 else
                                 {
                                     // kill all the pids using the file
+                                    cout << "Following PIDs have opened the given file in lock mode: " << endl;
+                                    for (auto itr = pids_set_lock.begin(); itr != pids_set_lock.end(); itr++)
+                                    {
+                                        cout << *itr << endl;
+                                    }
+                                    cout << "Following PIDs have opened the given file in normal mode: " << endl;
+                                    for (auto itr = pids_set_nolock.begin(); itr != pids_set_nolock.end(); itr++)
+                                    {
+                                        cout << *itr << endl;
+                                    }
                                     printf("Are you want to kill all the processes using the file? (yes/no): ");
                                     string response;
                                     cin >> response;
-                                    if(response=="yes")
+                                    if (response == "yes")
                                     {
-                                        for(auto it = pids_set_lock.begin(); it!=pids_set_lock.end(); it++){
+                                        for (auto it = pids_combined.begin(); it != pids_combined.end(); it++)
+                                        {
                                             kill(*it, SIGKILL);
                                             printf("Killed process %d\n", *it);
                                         }
                                         int del = remove(shell_command.arguments[1].c_str());
-                                        if(del==0)
+                                        if (del == 0)
                                             printf("Deleted file %s\n", shell_command.arguments[1].c_str());
                                         else
                                             printf("Error deleting file %s\n", shell_command.arguments[1].c_str());

@@ -8,7 +8,6 @@ void delep(char *argpath, int fd)
         exit(1);
     }
 
-    std::set<int> pids;
     string msgPIDS = "";
 
     struct dirent *entry;
@@ -40,8 +39,6 @@ void delep(char *argpath, int fd)
             
             if (!strcmp(buf, argpath)){
                 // printf("PID %s has the file open", entry->d_name);
-                cerr << "PID " << entry->d_name << " has the file open" << endl;
-                pids.insert(atoi(entry->d_name));
                 char path[1024];
                 sprintf(path, "/proc/%s/fdinfo/%s", entry->d_name, fd_entry->d_name);
                 FILE *fptemp = fopen(path, "r");
@@ -64,7 +61,6 @@ void delep(char *argpath, int fd)
         closedir(fd_dirp);
     }
     closedir(dirp);
-    cerr << msgPIDS << endl;
     write(fd, msgPIDS.c_str(), msgPIDS.length()+1);
     // if(pids.size()==0)
     //     printf("No process has the file open\n");
