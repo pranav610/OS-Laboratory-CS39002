@@ -532,9 +532,41 @@ int main()
                                 // close(pipefddp[1]);
                                 // dup(pipefddp[0]);
 
+                                string pids = "";
+                                set<int> pids_set_nolock;
+                                set<int> pids_set_lock;
                                 char mehta[1024];
-                                read(pipefddp[0], mehta, 1024);
+                                memset(mehta, 0, 1024);
+                                int nread;
+                                nread = read(pipefddp[0], mehta, 1024);
+                                if (nread > 0)
+                                {
+                                    while (mehta[nread - 1] != '\0')
+                                    {
+                                        pids += mehta;
+                                        memset(mehta, 0, 1024);
+                                        nread = read(pipefddp[0], mehta, 1024);
+                                        if (nread == 0)
+                                        {
+                                            break;
+                                        }
+                                        if (nread < 0)
+                                        {
+                                            perror("read");
+                                            exit(EXIT_FAILURE);
+                                        }
+                                    }
+                                }
+                                else if (nread < 0)
+                                {
+                                    perror("read");
+                                    exit(EXIT_FAILURE);
+                                }
+
+                                pids += mehta;
+
                                 cout << mehta << endl;
+                                cout << pids << endl;
 
                                 // string pids;
                                 // set<int> pids_set_nolock;
@@ -549,40 +581,67 @@ int main()
                                 //         cout << "MILA non null\n";
                                 //     }
                                 //     cout << pids << endl;
-                                //     istringstream is_line1(pids);
-                                //     string entry;
-                                //     // 1010, 1011, 1012,
-                                //     while (getline(is_line1, entry, ','))
-                                //     {
-                                //         istringstream is_line2(entry);
-                                //         string type;
-                                //         getline(is_line2, type, ':');
-                                //         if (type == "Lock")
-                                //         {
-                                //             string pidin;
-                                //             if (getline(is_line2, pidin))
-                                //                 pids_set_lock.insert(atoi(pidin.c_str()));
-                                //         }
-                                //         else if (type == "NoLock")
-                                //         {
-                                //             string pidin;
-                                //             if (getline(is_line2, pidin))
-                                //                 pids_set_nolock.insert(atoi(pidin.c_str()));
-                                //         }
-                                //     }
-                                    
-                                    
+                                istringstream is_line1(pids);
+                                string entry;
+                                // 1010, 1011, 1012,
+                                while (getline(is_line1, entry, ','))
+                                {
+                                    istringstream is_line2(entry);
+                                    string type;
+                                    getline(is_line2, type, ':');
+                                    if (type == "Lock")
+                                    {
+                                        string pidin;
+                                        if (getline(is_line2, pidin))
+                                            pids_set_lock.insert(atoi(pidin.c_str()));
+                                    }
+                                    else if (type == "NoLock")
+                                    {
+                                        string pidin;
+                                        if (getline(is_line2, pidin))
+                                            pids_set_nolock.insert(atoi(pidin.c_str()));
+                                    }
+                                }
 
-                                //     cout << "Following PIDs have opened the given file in lock mode: " << endl;
-                                //     for (auto itr = pids_set_lock.begin(); itr != pids_set_lock.end(); itr++)
-                                //     {
-                                //         cout << *itr << endl;
-                                //     }
-                                //     cout << "Following PIDs have opened the given file in normal mode: " << endl;
-                                //     for (auto itr = pids_set_nolock.begin(); itr != pids_set_nolock.end(); itr++)
-                                //     {
-                                //         cout << *itr << endl;
-                                //     }
+                                cout << "Following PIDs have opened the given file in lock mode: " << endl;
+                                for (auto itr = pids_set_lock.begin(); itr != pids_set_lock.end(); itr++)
+                                {
+                                    cout << *itr << endl;
+                                }
+                                cout << "Following PIDs have opened the given file in normal mode: " << endl;
+                                for (auto itr = pids_set_nolock.begin(); itr != pids_set_nolock.end(); itr++)
+                                {
+                                    cout << *itr << endl;
+                                }
+
+                                // append two sets into one
+                                pids_set_lock.insert(pids_set_nolock.begin(), pids_set_nolock.end());
+
+                                if((int)pids_set_lock.size()==0)
+                                    printf("No process has the file open\n");
+                                else
+                                {
+                                    // kill all the pids using the file
+                                    printf("Are you want to kill all the processes using the file? (yes/no): ");
+                                    string response;
+                                    cin >> response;
+                                    if(response=="yes")
+                                    {
+                                        for(auto it = pids_set_lock.begin(); it!=pids_set_lock.end(); it++){
+                                            kill(*it, SIGKILL);
+                                            printf("Killed process %d\n", *it);
+                                        }
+                                        int del = remove(shell_command.arguments[1].c_str());
+                                        if(del==0)
+                                            printf("Deleted file %s\n", shell_command.arguments[1].c_str());
+                                        else
+                                            printf("Error deleting file %s\n", shell_command.arguments[1].c_str());
+                                    }
+                                    else
+                                    {
+                                        printf("Exiting...\n");
+                                    }
+                                }
                                 // }
                                 // restore stdin
                                 // close(0);
