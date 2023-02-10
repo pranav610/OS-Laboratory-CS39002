@@ -1,8 +1,8 @@
 CC=g++
 FLAGS=-Wall -std=c++14
 
-shell: shell.o delep.o history.o squashbug.o
-	$(CC) $(FLAGS) -o shell shell.o delep.o history.o squashbug.o -lreadline
+shellkil: shell.o delep.o history.o squashbug.o
+	$(CC) $(FLAGS) -o shellkil shell.o delep.o history.o squashbug.o -lreadline
 
 shell.o: shell.cpp
 	$(CC) $(FLAGS) -c shell.cpp -lreadline
@@ -31,4 +31,4 @@ clean:
 	rm -f *.o 
 
 distclean: 
-	rm -f *.o shell createlock test_squashbug nolock
+	rm -f *.o shellkil createlock test_squashbug nolock

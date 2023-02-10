@@ -1,23 +1,9 @@
-#include <iostream>
-#include <signal.h>
-
+#include<bits/stdc++.h>
 using namespace std;
-
-// void ctrl_c_handler(int signum) {
-//   cout << endl;
-//   signal(SIGINT, SIG_IGN);
-//   cout
-// }
-
-int main() {
-  // signal(SIGINT, ctrl_c_handler);
-  int n;
-  while (1) {
-    sleep(1);
-    cout << "$\n";
-    // string str;
-    // cin>>str;
-  }
-
-  return 0;
+int main(){
+	while(1){
+		sleep(1);
+		cout<<"Hello World!"<<endl;
+	}
+	return 0;
 }

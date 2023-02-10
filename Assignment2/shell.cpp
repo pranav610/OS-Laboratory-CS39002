@@ -10,12 +10,11 @@
 #include <fcntl.h>
 #include <glob.h>
 #include <readline/readline.h>
-#include <readline/readline.h>
+#include <ext/stdio_filebuf.h>
 
 #include "delep.hpp"
 #include "history.hpp"
 #include "squashbug.hpp"
-
 
 using namespace std;
 
@@ -104,7 +103,7 @@ public:
                 int ret = glob(arg.c_str(), GLOB_TILDE, NULL, &glob_result);
                 if (ret != 0)
                 {
-                    cerr<<"No such file or directory";
+                    cerr << "No such file or directory";
                     fflush(stdout);
                     siglongjmp(env, 42);
                 }
@@ -219,13 +218,13 @@ void delim_remove(string &command)
 }
 
 history h;
-char *curr_line = (char *) NULL;
+char *curr_line = (char *)NULL;
 
 static int key_up_arrow(int count, int key)
 {
     if (count == 0)
         return 0;
-    if(h.curr_ind == h.get_size())
+    if (h.curr_ind == h.get_size())
         curr_line = strdup(rl_line_buffer);
     h.decrement_history();
     string line = h.get_curr();
@@ -238,7 +237,7 @@ static int key_down_arrow(int count, int key)
 {
     if (count == 0)
         return 0;
-    if(h.curr_ind == h.get_size())
+    if (h.curr_ind == h.get_size())
         curr_line = strdup(rl_line_buffer);
     h.increment_history();
     if (h.curr_ind < h.get_size())
@@ -348,10 +347,9 @@ int main()
             exit(EXIT_SUCCESS);
         }
 
-
         string command = string(input);
         free(input);
-        input = (char *) NULL;
+        input = (char *)NULL;
 
         // Add the command to the history
 
@@ -447,6 +445,8 @@ int main()
                 else
                 {
                     // If not, fork a child process and execute the command
+                    int pipefddp[2];
+                    pipe(pipefddp);
                     foreground_pid = fork();
                     if (foreground_pid == 0)
                     {
@@ -458,12 +458,17 @@ int main()
                         sa_int.sa_handler = SIG_IGN;
                         sigaction(SIGINT, &sa_int, NULL);
 
+                        struct sigaction sa;
+                        memset(&sa, 0, sizeof(sa));
+                        sa.sa_handler = SIG_IGN;
+                        sigaction(SIGTSTP, &sa, NULL);
+
                         // Execute the command
                         if (shell_command.command == "delep")
                         {
                             if (shell_command.arguments.size() == 2)
                             {
-                                delep((char *)shell_command.arguments[1].c_str());
+                                delep((char *)shell_command.arguments[1].c_str(), pipefddp[1]);
                             }
                             else
                             {
@@ -473,14 +478,14 @@ int main()
                         else if (shell_command.command == "sb")
                         {
                             printf("sb\n");
-                            if((int)shell_command.arguments.size() >  3 || (int)shell_command.arguments.size() == 1)
+                            if ((int)shell_command.arguments.size() > 3 || (int)shell_command.arguments.size() == 1)
                             {
                                 cerr << "Invalid number of arguments" << endl;
                             }
                             else if ((int)shell_command.arguments.size() == 3)
-                            {   
-                                auto itt = find(shell_command.arguments.begin(), shell_command.arguments.end(), "--suggest");
-                                if(itt != shell_command.arguments.end())
+                            {
+                                auto itt = find(shell_command.arguments.begin(), shell_command.arguments.end(), "-suggest");
+                                if (itt != shell_command.arguments.end())
                                 {
                                     shell_command.arguments.erase(itt);
                                     squashbug sb(atoi(shell_command.arguments[1].c_str()), true);
@@ -497,7 +502,7 @@ int main()
                                 sb.run();
                             }
                         }
-                        else if(execute_command(shell_command, is_background)<0)
+                        else if (execute_command(shell_command, is_background) < 0)
                         {
                             exit(EXIT_FAILURE);
                         }
@@ -508,12 +513,107 @@ int main()
                         // Parent process
                         if (is_background)
                         {
-                            cout<<"["<<job_number++<<"] "<<foreground_pid<<endl;
+                            cout << "[" << job_number++ << "] " << foreground_pid << endl;
                             background_pids.insert(foreground_pid);
                         }
                         else
                         {
                             waitpid(foreground_pid, NULL, WUNTRACED);
+                            if (shell_command.command == "delep")
+                            {
+                                string pids = "";
+                                set<int> pids_set_nolock;
+                                set<int> pids_set_lock;
+                                char bufff[1024];
+                                memset(bufff, 0, 1024);
+                                int nread;
+                                nread = read(pipefddp[0], bufff, 1024);
+                                if (nread > 0)
+                                {
+                                    while (bufff[nread - 1] != '\0')
+                                    {
+                                        pids += bufff;
+                                        memset(bufff, 0, 1024);
+                                        nread = read(pipefddp[0], bufff, 1024);
+                                        if (nread == 0)
+                                        {
+                                            break;
+                                        }
+                                        if (nread < 0)
+                                        {
+                                            perror("read");
+                                            exit(EXIT_FAILURE);
+                                        }
+                                    }
+                                }
+                                else if (nread < 0)
+                                {
+                                    perror("read");
+                                    exit(EXIT_FAILURE);
+                                }
+                                pids += bufff;
+                                istringstream is_line1(pids);
+                                string entry;
+                                while (getline(is_line1, entry, ','))
+                                {
+                                    istringstream is_line2(entry);
+                                    string type;
+                                    getline(is_line2, type, ':');
+                                    if (type == "Lock")
+                                    {
+                                        string pidin;
+                                        if (getline(is_line2, pidin))
+                                            pids_set_lock.insert(atoi(pidin.c_str()));
+                                    }
+                                    else if (type == "NoLock")
+                                    {
+                                        string pidin;
+                                        if (getline(is_line2, pidin))
+                                            pids_set_nolock.insert(atoi(pidin.c_str()));
+                                    }
+                                }
+
+                                // append two sets into one
+                                set<int> pids_combined(pids_set_lock.begin(), pids_set_lock.end());
+                                pids_combined.insert(pids_set_nolock.begin(), pids_set_nolock.end());
+
+                                if ((int)pids_combined.size() == 0)
+                                    printf("No process has the file open\n");
+                                else
+                                {
+                                    // kill all the pids using the file
+                                    cout << "Following PIDs have opened the given file in lock mode: " << endl;
+                                    for (auto itr = pids_set_lock.begin(); itr != pids_set_lock.end(); itr++)
+                                    {
+                                        cout << *itr << endl;
+                                    }
+                                    cout << "Following PIDs have opened the given file in normal mode: " << endl;
+                                    for (auto itr = pids_set_nolock.begin(); itr != pids_set_nolock.end(); itr++)
+                                    {
+                                        cout << *itr << endl;
+                                    }
+                                    printf("Are you want to kill all the processes using the file? (yes/no): ");
+                                    string response;
+                                    cin >> response;
+                                    if (response == "yes")
+                                    {
+                                        for (auto it = pids_combined.begin(); it != pids_combined.end(); it++)
+                                        {
+                                            kill(*it, SIGKILL);
+                                            printf("Killed process %d\n", *it);
+                                        }
+                                        int del = remove(shell_command.arguments[1].c_str());
+                                        if (del == 0)
+                                            printf("Deleted file %s\n", shell_command.arguments[1].c_str());
+                                        else
+                                            printf("Error deleting file %s\n", shell_command.arguments[1].c_str());
+                                    }
+                                    else
+                                    {
+                                        printf("Exiting...\n");
+                                    }
+                                }
+                            }
                         }
                         foreground_pid = 0;
                     }
