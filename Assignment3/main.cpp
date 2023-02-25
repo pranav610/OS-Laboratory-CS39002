@@ -9,7 +9,7 @@ using namespace std;
 
 #define CONSUMER_COUNT 10
 
-int main()
+int main(int argc, char const *argv[])
 {
     key_t unique_key = ftok("./shared_memory_file", 15);
 
@@ -54,7 +54,10 @@ int main()
         {
             if (fork() == 0)
             {
-                execl("./consumer", "./consumer", to_string(i).c_str(), NULL);
+                if(argc > 1)
+                    execl("./consumer", "./consumer", to_string(i).c_str(), argv[1], NULL);
+                else
+                    execl("./consumer", "./consumer", to_string(i).c_str(), NULL);
                 exit(EXIT_SUCCESS);
             }
         }
