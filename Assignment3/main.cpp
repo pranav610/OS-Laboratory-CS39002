@@ -19,15 +19,6 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    int shmid = shmget(unique_key, 1000, IPC_CREAT | 0666);
-    if (shmid == -1)
-    {
-        perror("shmget");
-        exit(EXIT_FAILURE);
-    }
-
-    char *str = (char *)shmat(shmid, (void *)0, 0);
-
     string graph = "";
     FILE *fp = fopen("my_graph.txt", "r");
 
@@ -40,17 +31,26 @@ int main()
         graph += c;
     }
 
+    int shmid = shmget(unique_key, graph.length() + 1000, IPC_CREAT | 0666);
+    if (shmid == -1)
+    {
+        perror("shmget");
+        exit(EXIT_FAILURE);
+    }
+
+    char *str = (char *)shmat(shmid, (void *)0, 0);
+
     memcpy(str, graph.c_str(), graph.length());
 
     if (fork() == 0)
     {
-        system("./producer");
+        execl("./producer", "./producer", NULL);
         exit(EXIT_SUCCESS);
     }
     else
     {
         sleep(2);
-        for(int i=0; i<CONSUMER_COUNT; ++i)
+        for (int i = 0; i < CONSUMER_COUNT; ++i)
         {
             if (fork() == 0)
             {
@@ -62,7 +62,8 @@ int main()
 
     sleep(30);
 
-    cout << "Graph: \n" << str << endl;
+    cout << "Graph: \n"
+         << str << endl;
 
     shmdt(str);
     shmctl(shmid, IPC_RMID, NULL);
