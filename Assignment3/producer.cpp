@@ -91,9 +91,7 @@ int main()
     string new_graph = string(str) + extra_edges;
     memcpy(str, (new_graph).c_str(), new_graph.length());
 
-    // sleep(50);
-
     shmdt(str);
-    // shmctl(shmid, IPC_RMID, NULL);
+
     return 0;
 }
