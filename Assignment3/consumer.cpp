@@ -22,17 +22,19 @@ int main(int argc, char const *argv[])
         exit(EXIT_FAILURE);
     }
 
-    int shmid = shmget(unique_key, 1000, IPC_CREAT | 0666);
-    if (shmid == -1)
-    {
-        perror("shmget");
-        exit(EXIT_FAILURE);
-    }
+    char *str;
 
-    char *str = (char *)shmat(shmid, (void *)0, 0);
-
-    while (1)
+    for (int _ = 0;; _++)
     {
+        int shmid = shmget(unique_key, 0, 0666);
+        if (shmid == -1)
+        {
+            perror("shmget");
+            exit(EXIT_FAILURE);
+        }
+
+        str = (char *)shmat(shmid, (void *)0, 0);
+
         stringstream ss;
 
         ss << str;
@@ -131,12 +133,15 @@ int main(int argc, char const *argv[])
                 fprintf(fp, "%s\n", path.c_str());
             }
         }
+        fflush(fp);
+        fclose(fp);
+        if (consumer_process_count == 1)
+            printf("cons-check-1\n");
 
         sleep(30);
-        break;  
+        if (_ == 4)
+            break;
     }
-
-    // sleep(10);
 
     shmdt(str);
 

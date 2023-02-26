@@ -23,7 +23,7 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    int shmid = shmget(unique_key, 1000, IPC_CREAT | 0666);
+    int shmid = shmget(unique_key, 0, 0666);
     if (shmid == -1)
     {
         perror("shmget");
@@ -32,7 +32,9 @@ int main()
 
     char *str = (char *)shmat(shmid, (void *)0, 0);
 
-    while (1)
+    printf("Producer process started\n");
+
+    for (int _ = 0;; _++)
     {
         stringstream ss;
 
@@ -91,10 +93,17 @@ int main()
         }
 
         string new_graph = string(str) + extra_edges;
+        shmdt(str);
+        shmctl(shmid, IPC_RMID, NULL);
+        shmid = shmget(unique_key, new_graph.length() + 5, IPC_CREAT | 0666);
+        str = (char *)shmat(shmid, (void *)0, 0);
+
         memcpy(str, (new_graph).c_str(), new_graph.length());
 
+        printf("prod-check\n");
         sleep(50);
-        break;
+        if (_ == 2)
+            break;
     }
 
     shmdt(str);

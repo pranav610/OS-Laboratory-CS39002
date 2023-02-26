@@ -2,6 +2,7 @@
 #include <sys/ipc.h>
 #include <stdio.h>
 #include <sys/shm.h>
+#include <sys/wait.h>
 #include <iostream>
 #include <string.h>
 
@@ -31,7 +32,7 @@ int main(int argc, char const *argv[])
         graph += c;
     }
 
-    int shmid = shmget(unique_key, graph.length() + 1000, IPC_CREAT | 0666);
+    int shmid = shmget(unique_key, graph.length() + 5, IPC_CREAT | 0666);
     if (shmid == -1)
     {
         perror("shmget");
@@ -63,10 +64,19 @@ int main(int argc, char const *argv[])
         }
     }
 
-    sleep(30);
+    for(int i = 0; i < CONSUMER_COUNT + 1; ++i)
+        wait(NULL);
+    wait(NULL);
 
-    cout << "Graph: \n"
-         << str << endl;
+    shmid = shmget(unique_key, 0, 0666);
+    if (shmid == -1)
+    {
+        perror("shmget");
+        exit(EXIT_FAILURE);
+    }
+
+    str = (char *)shmat(shmid, (void *)0, 0);
+    printf("%s\n", str);
 
     shmdt(str);
     shmctl(shmid, IPC_RMID, NULL);
