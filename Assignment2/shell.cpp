@@ -458,11 +458,6 @@ int main()
                         sa_int.sa_handler = SIG_IGN;
                         sigaction(SIGINT, &sa_int, NULL);
 
-                        struct sigaction sa;
-                        memset(&sa, 0, sizeof(sa));
-                        sa.sa_handler = SIG_IGN;
-                        sigaction(SIGTSTP, &sa, NULL);
-
                         // Execute the command
                         if (shell_command.command == "delep")
                         {
