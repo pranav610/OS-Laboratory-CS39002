@@ -78,6 +78,23 @@ void squashbug::run()
         return;
     }
 
+    printf("Process Tree:\n");
+    pid_t parentpid = atoi(pidMap[sbpid]["PPid"].c_str());
+    int counter = 0;
+    while(parentpid)
+    {   
+        cout << "Process " << (counter + 1) << ":";
+        cout << left << setw(20) << setfill(' ') << pidMap[parentpid]["Name"];
+        cout << "PID: ";
+        cout << left << setw(10) << setfill(' ') << parentpid;
+        cout << "State: ";
+        cout << left << setw(20) << setfill(' ') << pidMap[parentpid]["State"];
+        cout << "Children: ";
+        cout << left << setw(15) << setfill(' ') << (countChildren(parentpid)) << endl;
+        parentpid = atoi(pidMap[parentpid]["PPid"].c_str());
+        counter++;
+    }
+
     pids[0] = sbpid;
     pids[1] = atoi(pidMap[pids[0]]["PPid"].c_str());
     if (pids[1] == 0)
@@ -86,21 +103,21 @@ void squashbug::run()
         pids[2] = atoi(pidMap[pids[1]]["PPid"].c_str());
 
 
-    printf("Process Tree:\n");
-    for (int i = 0; i < 3; i++)
-    {
-        if (i == count)
-        {
-            printf("Process %d: ", i + 1);
-            printf("PID: %d\n, ", pids[i]);
-            break;
-        }
-        printf("Process %d: ", i + 1);
-        printf("%s, \t", pidMap[pids[i]]["Name"].c_str());
-        printf("PID: %d, \t", pids[i]);
-        printf("State: %s, \t", pidMap[pids[i]]["State"].c_str());
-        printf("Children: %d\n", countChildren(pids[i]));
-    }
+    // printf("Process Tree:\n");
+    // for (int i = 0; i < 3; i++)
+    // {
+    //     if (i == count)
+    //     {
+    //         printf("Process %d: ", i + 1);
+    //         printf("PID: %d\n, ", pids[i]);
+    //         break;
+    //     }
+    //     printf("Process %d: ", i + 1);
+    //     printf("%s, \t", pidMap[pids[i]]["Name"].c_str());
+    //     printf("PID: %d, \t", pids[i]);
+    //     printf("State: %s, \t", pidMap[pids[i]]["State"].c_str());
+    //     printf("Children: %d\n", countChildren(pids[i]));
+    // }
 
     if (suggest)
     {

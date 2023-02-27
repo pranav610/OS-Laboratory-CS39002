@@ -21,6 +21,7 @@ history::history() : max_size(MAX_SIZE)
         }
         fclose(fp);
     }
+    
     curr_ind = dequeue.size();
 }
 

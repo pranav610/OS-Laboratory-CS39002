@@ -1,0 +1,85 @@
+p
+swap
+./p
+./test
+ps
+hello world
+ps
+cat test.cpp | sort | more
+ls -l
+./test test.cpp
+ps
+kill -9 25102
+ps
+sort < test.cpp
+sort -n < test.cpp
+ls > abc
+cat abc
+sort -r abc
+sort -r < abc > bcd
+cat bcd
+sort -r < abc > bcd &
+ps
+sort < bcd > abc &
+cat abc
+sort -r bcd
+sort -r bcd > bcd
+cat < bcd > abc &
+cat abc
+cat bcd
+gedit bcd
+cat bcd
+hello < bcd
+ps
+cat bcd
+cat < bcd > abc
+cat abc
+rm abc
+cat < bcd > abc
+rm abc
+cat < bcd > abc &
+cat abc
+rm abc
+ls
+cat bcd
+cat < bcd > abc &
+cat bcd
+cat abc
+cat < bcd > abc
+cat bcd
+cat abc
+gedit bcd
+sort -r bcd
+sort bcd
+ls | more
+cat bcd | sort |more
+./test
+ps
+ps
+kill -9 25440
+cat test.cpp
+./test &
+ps
+kill -9 25524
+bash
+cd
+pwd
+pwd jfhdsjfbjfk
+cd ~
+cd Desktop
+cd ~
+ls **.txt
+ls
+cd OS-Laboratory-CS39002/Assignment2/shellfiles
+ls
+ls **.txt
+ls ???????.txt
+ls *.txt
+cd
+cd Desktop/OS-Laboratory-CS39002/Assignment2/shellfiles
+cd ..
+ls
+gedit h*
+ls
+ls -l
+exit

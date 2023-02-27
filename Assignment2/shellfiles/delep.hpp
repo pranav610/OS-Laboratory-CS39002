@@ -7,6 +7,8 @@
 #include<unistd.h>
 #include<bits/stdc++.h>
 
-void delep(char*path);
+using namespace std;
+
+void delep(char*path, int fd);
 
 #endif
