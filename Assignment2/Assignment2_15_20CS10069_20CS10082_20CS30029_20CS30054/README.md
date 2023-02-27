@@ -12,7 +12,7 @@ sudo apt-get install libreadline-dev
 ```
 ## Run
 ```bash
-    ./shell
+    ./shellkil
 ```
 ## Features
 - delep command
