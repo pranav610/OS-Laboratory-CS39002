@@ -12,6 +12,10 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
+    if(argc > 1)
+        if(strcmp(argv[1], "-optimize") != 0)
+            printf("Command incorrect!\n"), exit(EXIT_FAILURE);
+
     key_t unique_key = ftok("./shared_memory_file", 15);
 
     if (unique_key == -1)
