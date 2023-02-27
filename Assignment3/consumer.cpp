@@ -7,6 +7,10 @@
 
 using namespace std;
 
+#define CONSUMER_COUNT 10
+
+set<int> nodes_assigned;
+
 int main(int argc, char const *argv[])
 {
     int consumer_process_count = atoi(argv[1]);
@@ -73,12 +77,16 @@ int main(int argc, char const *argv[])
             }
         }
 
-        int node_set_start = (node_count / 10) * consumer_process_count;
-        int node_set_end = (node_count / 10) * (consumer_process_count + 1);
+        int i = (nodes_assigned.empty() ? consumer_process_count : *nodes_assigned.rbegin());
+        while (i < node_count)
+        {
+            nodes_assigned.insert(i);
+            i += CONSUMER_COUNT;
+        }
 
         FILE *fp = fopen(("./" + file_name + ".txt").c_str(), "w");
 
-        for (int i = node_set_start; i < node_set_end; i++)
+        for (auto &i : nodes_assigned)
         {
             int dist[node_count];
             int par[node_count];
@@ -133,8 +141,10 @@ int main(int argc, char const *argv[])
                 fprintf(fp, "%s\n", path.c_str());
             }
         }
+
         fflush(fp);
         fclose(fp);
+
         if (consumer_process_count == 1)
             printf("cons-check-1\n");
 
