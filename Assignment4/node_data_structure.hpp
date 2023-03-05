@@ -4,11 +4,15 @@
 #include <queue>
 using namespace std;
 
-class{
+class Node{
     public:
     int node_id;
     queue<int> wall_queue;
     queue<int> feed_queue;
+    bool cronological_order;
+
+    Node();
+    Node(int);
 };
 
-#endif NODE_DATA_STRUCTURE_HPP
+#endif
