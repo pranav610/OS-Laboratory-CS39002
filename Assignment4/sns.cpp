@@ -31,6 +31,7 @@ int main()
         }
         num_nodes = max(num_nodes, max(row[0], row[1]));
     }
+    num_nodes++;
     fin.close();
 
     adj_list.resize(num_nodes);
