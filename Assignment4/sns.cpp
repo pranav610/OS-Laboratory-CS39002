@@ -57,26 +57,26 @@ int main()
         nodes[i] = Node(i);
     }
 
-    // /* Creating threads */
-    // pthread_t userSimulatorThread;
-    // vector<pthread_t> readPostThreads(N_THR_READ_POST);
-    // vector<pthread_t> pushUpdateThreads(N_THR_PUSH_UPDATE);
+    /* Creating threads */
+    pthread_t userSimulatorThread;
+    vector<pthread_t> readPostThreads(N_THR_READ_POST);
+    vector<pthread_t> pushUpdateThreads(N_THR_PUSH_UPDATE);
 
-    // /* Creating attributes for the threads */
-    // pthread_attr_t attr;
-    // pthread_attr_init(&attr);
-    // pthread_create(&userSimulatorThread, &attr, userSimulator, NULL);
-    // for (auto &thread : readPostThreads)
-    //     pthread_create(&thread, &attr, readPost, NULL);
-    // for (auto &thread : pushUpdateThreads)
-    //     pthread_create(&thread, &attr, pushUpdate, NULL);
+    /* Creating attributes for the threads */
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_create(&userSimulatorThread, &attr, userSimulator, NULL);
+    for (auto &thread : readPostThreads)
+        pthread_create(&thread, &attr, readPost, NULL);
+    for (auto &thread : pushUpdateThreads)
+        pthread_create(&thread, &attr, pushUpdate, NULL);
 
-    // /* Wait for the threads to exit */
-    // pthread_join(userSimulatorThread, NULL);
-    // for (auto &thread : readPostThreads)
-    //     pthread_join(thread, NULL);
-    // for (auto &thread : pushUpdateThreads)
-    //     pthread_join(thread, NULL);
+    /* Wait for the threads to exit */
+    pthread_join(userSimulatorThread, NULL);
+    for (auto &thread : readPostThreads)
+        pthread_join(thread, NULL);
+    for (auto &thread : pushUpdateThreads)
+        pthread_join(thread, NULL);
 
     return 0;
 }
