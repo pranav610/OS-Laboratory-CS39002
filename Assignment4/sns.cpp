@@ -1,8 +1,11 @@
 #include <bits/stdc++.h>
 #include "threads.hpp"
+#define N_THR_READ_POST 10
+#define N_THR_PUSH_UPDATE 25
 using namespace std;
 
-/*Your functions here*/
+/* Shared graph between threads */
+vector<vector<int>> adj_list;
 
 int main()
 {
@@ -25,7 +28,7 @@ int main()
     }
     fin.close();
 
-    vector<vector<int>> adj_list(num_nodes + 1);
+    adj_list.resize(num_nodes);
     fin.open("musae_git_edges.csv");
     getline(fin, line);
     while (getline(fin, line))
@@ -42,8 +45,26 @@ int main()
     }
     fin.close();
 
+    /* Creating threads */
+    pthread_t userSimulatorThread;
+    vector<pthread_t> readPostThreads(N_THR_READ_POST);
+    vector<pthread_t> pushUpdateThreads(N_THR_PUSH_UPDATE);
 
+    /* Creating attributes for the threads */
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_create(&userSimulatorThread, &attr, userSimulator, NULL);
+    for (auto &thread : readPostThreads)
+        pthread_create(&thread, &attr, readPost, NULL);
+    for (auto &thread : pushUpdateThreads)
+        pthread_create(&thread, &attr, pushUpdate, NULL);
 
+    /* Wait for the threads to exit */
+    pthread_join(userSimulatorThread, NULL);
+    for (auto &thread : readPostThreads)
+        pthread_join(thread, NULL);
+    for (auto &thread : pushUpdateThreads)
+        pthread_join(thread, NULL);
 
     return 0;
 }
