@@ -7,10 +7,11 @@
 
 using namespace std;
 
-#define RANGE_LOW_NODES 1
-#define RANGE_HIGH_NODES 3
+#define PROD_SLEEP 50
+#define RANGE_LOW_NODES 10
+#define RANGE_HIGH_NODES 30
 #define RANGE_LOW_EDGES 1
-#define RANGE_HIGH_EDGES 3
+#define RANGE_HIGH_EDGES 20
 
 int main()
 {
@@ -100,10 +101,7 @@ int main()
 
         memcpy(str, (new_graph).c_str(), new_graph.length());
 
-        printf("prod-check\n");
-        sleep(50);
-        if (_ == 2)
-            break;
+        sleep(PROD_SLEEP);
     }
 
     shmdt(str);

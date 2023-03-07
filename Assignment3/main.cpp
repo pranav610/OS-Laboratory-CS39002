@@ -12,8 +12,8 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
-    if(argc > 1)
-        if(strcmp(argv[1], "-optimize") != 0)
+    if (argc > 1)
+        if (strcmp(argv[1], "-optimize") != 0)
             printf("Command incorrect!\n"), exit(EXIT_FAILURE);
 
     key_t unique_key = ftok("./shared_memory_file", 15);
@@ -25,7 +25,7 @@ int main(int argc, char const *argv[])
     }
 
     string graph = "";
-    FILE *fp = fopen("my_graph.txt", "r");
+    FILE *fp = fopen("facebook_combined.txt", "r");
 
     while (1)
     {
@@ -68,7 +68,7 @@ int main(int argc, char const *argv[])
         }
     }
 
-    for(int i = 0; i < CONSUMER_COUNT + 1; ++i)
+    for (int i = 0; i < CONSUMER_COUNT + 1; ++i)
         wait(NULL);
     wait(NULL);
 
@@ -80,7 +80,7 @@ int main(int argc, char const *argv[])
     }
 
     str = (char *)shmat(shmid, (void *)0, 0);
-    printf("%s\n", str);
+    // cout<<"Graph:\n"<<str<<endl;
 
     shmdt(str);
     shmctl(shmid, IPC_RMID, NULL);
