@@ -1,6 +1,10 @@
 #include <bits/stdc++.h>
 #include "threads.hpp"
 #include "data_structures.hpp"
+#include <pthread.h>
+#include <unistd.h>
+#include <sys/time.h>
+
 #define N_THR_READ_POST 10
 #define N_THR_PUSH_UPDATE 25
 using namespace std;
@@ -8,6 +12,12 @@ using namespace std;
 /* Shared graph and node data structre between threads */
 vector<vector<int>> adj_list;
 vector<Node> nodes;
+
+queue<Action> q1, q2;
+pthread_mutex_t lock1 = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t lock2 = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond1 = PTHREAD_COND_INITIALIZER;
+pthread_cond_t cond2 = PTHREAD_COND_INITIALIZER;
 
 int main()
 {
