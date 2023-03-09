@@ -14,7 +14,8 @@ using namespace std;
 vector<vector<int>> adj_list;
 vector<Node> nodes;
 
-queue<Action> q1, q2;
+queue<Action> q1;
+queue<int> q2;
 pthread_mutex_t lock1 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lock2 = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond1 = PTHREAD_COND_INITIALIZER;
@@ -66,10 +67,10 @@ int main()
     fin.close();
 
     /* Initialize the node data structure */
-    nodes.resize(num_nodes);
+    // nodes.resize(num_nodes);
     for (int i = 0; i < num_nodes; i++)
     {
-        nodes[i] = Node(i);
+        nodes.push_back(Node(i));
     }
 
     /* Creating threads */
@@ -93,5 +94,11 @@ int main()
     for (auto &thread : pushUpdateThreads)
         pthread_join(thread, NULL);
 
+    pthread_mutex_destroy(&lock1);
+    pthread_mutex_destroy(&lock2);
+    pthread_cond_destroy(&cond1);
+    pthread_cond_destroy(&cond2);
+    for (int i = 0; i < N_NODES; i++)pthread_mutex_destroy(&lock_node[i]);
+    
     return 0;
 }

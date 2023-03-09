@@ -4,13 +4,23 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <stdlib.h>
 
 // Lock1, Cond1, q1 => For userSimulator - pushUpdate communication
 // Lock2, Cond2, q2 => For pushUpdate - readPost communication
 // Action: 1 => Post, 2 => Comment, 3 => Like
 // Sns Log format - UserSimulator :tab: Data Name - Value, more tabs for indentation
+#define N_NODES 380000
 
-void *userSimulator()
+extern vector<vector<int>> adj_list;
+extern vector<Node> nodes;
+extern queue<Action> q1;
+extern queue<int> q2;
+extern pthread_mutex_t lock1, lock2;
+extern pthread_cond_t cond1, cond2;
+extern pthread_mutex_t lock_node[N_NODES];
+
+void *userSimulator(void *arg)
 {
     while (1)
     {
@@ -25,44 +35,44 @@ void *userSimulator()
                 num_nodes++;
             }
         }
-
+        
         for (auto node_id : nodes_picked)
         {
-            char *log = new char[10000];
-            char *temp = new char[100];
+            string log = "";
 
-            sprintf(temp, "UserSimulator\tNode Selected - %d\n", node_id);
-            strcat(log, temp);
+            // sprintf(temp, "UserSimulator\tNode Selected - %d\n", node_id);
+            // strcat(log, temp);
+            log += "UserSimulator\tNode Selected - " + to_string(node_id) + "\n";
 
             int degree = adj_list[node_id].size();
 
-            sprintf(temp, "UserSimulator\tDegree - %d\n", degree);
-            strcat(log, temp);
+            // sprintf(temp, "UserSimulator\tDegree - %d\n", degree);
+            // strcat(log, temp);
+            log += "UserSimulator\tDegree - " + to_string(degree) + "\n";
+
             if (!degree)
             {
-                printf("%s\n", log);
-                free(temp);
-                free(log);
+                cout<<log<<endl;
                 continue;
             }
 
-            sprintf(temp, "UserSimulator\tLog(Degree) - %d\n", degree);
-            strcat(log, temp);
-            sprintf(temp, "UserSimulator\tActions - %d", degree);
-            strcat(log, temp);
-
             degree = log2((double)degree);
+            // sprintf(temp, "UserSimulator\tLog(Degree) - %d\n", degree);
+            // strcat(log, temp);
+            // sprintf(temp, "UserSimulator\tActions - ");
+            // strcat(log, temp);
+            log += "UserSimulator\tLog(Degree) - " + to_string(degree) + "\n";
+            log += "UserSimulator\tActions - ";
+
             for (int i = 0; i < degree; i++)
             {
                 int action_type = rand() % 3 + 1;
                 if (action_type == 1)
-                    sprintf(temp, "Post ");
+                    log += "Post ";
                 else if (action_type == 2)
-                    sprintf(temp, "Comment ");
+                    log += "Comment ";
                 else
-                    sprintf(temp, "Like ");
-
-                strcat(log, temp);
+                    log += "Like ";
 
                 Action action(node_id, nodes[node_id].wall_queue.size(), action_type);
                 nodes[node_id].wall_queue.push(action);
@@ -75,10 +85,9 @@ void *userSimulator()
 
                 pthread_mutex_unlock(&lock1);
             }
-
-            cout << log << endl;
-            free(log);
-            free(temp);
+            
+            cout << log << endl;    
+            cout<<endl;
         }
         sleep(2 * 60);
     }
@@ -94,10 +103,10 @@ void *readPost(void* arg)
         pthread_cond_wait(&cond2, &lock2);
         int i = q2.front();
         q2.pop();
+        pthread_mutex_unlock(&lock2);
 
         pthread_mutex_lock(&lock_node[i]);
-        char *log = new char[10000];
-        char *temp = new char[100];
+        string log="";
         /*Get the chronological order*/
         bool chronological_order = nodes[i].get_chronological_order();
         if (chronological_order)
@@ -114,23 +123,25 @@ void *readPost(void* arg)
             sort(temp_vector.begin(), temp_vector.end(), [](Action a, Action b)
                  { return a.get_timestamp() < b.get_timestamp(); });
 
-            for (int j = 0; j < temp_vector.size(); j++)
+            for (int j = 0; j < (int)temp_vector.size(); j++)
             {
-                char type[10];
+                string type="";
                 if (temp_vector[j].get_action_type() == 1)
-                    sprintf(type, "Post");
+                    type = "Post";
                 else if (temp_vector[j].get_action_type() == 2)
-                    sprintf(type, "Comment");
+                    type = "Comment";
                 else
-                    sprintf(type, "Like");
+                    type = "Like";
 
-                sprintf(temp, "I read action number %d of type %s posted by user %d at time %s", temp_vector[j].get_action_id(), type, temp_vector[j].get_user_id(), temp_vector[j].get_timestamp());
-                strcat(log, temp);
+                // sprintf(temp, "I read action number %d of type %s posted by user %d at time %s", temp_vector[j].get_action_id(), type, temp_vector[j].get_user_id(), temp_vector[j].get_timestamp());
+                // strcat(log, temp);
+
+                log += "I read action number " + to_string(temp_vector[j].get_action_id()) + " of type " + type + " posted by user " + to_string(temp_vector[j].get_user_id()) + " at time " + to_string(temp_vector[j].get_timestamp()) + "\n";
                 /*Append it to sns.log file*/
-                FILE *fp = fopen("sns.log", "a");
-                fprintf(fp, "%s", log);
-                fclose(fp);
-                free(log);
+                // FILE *fp = fopen("sns.log", "a");
+                // fprintf(fp, "%s", log);
+                // fclose(fp);
+                // free(log);
             }
         }
         else // Here Priority is set
@@ -144,7 +155,7 @@ void *readPost(void* arg)
                 int num_common_nodes = 0;
                 for (auto v : adj_list[i])
                 {
-                    if (adj_list[action.get_user_id()].find(v) != adj_list[action.get_user_id()].end())
+                    if (find(adj_list[action.get_user_id()].begin(), adj_list[action.get_user_id()].end(), v) != adj_list[action.get_user_id()].end())
                         num_common_nodes++;
                 }
                 temp_vector.push_back({num_common_nodes, action});
@@ -153,33 +164,31 @@ void *readPost(void* arg)
             sort(temp_vector.begin(), temp_vector.end(), [](pair<int, Action> a, pair<int, Action> b)
                  { return a.first > b.first; });
 
-            for (int j = 0; j < temp_vector.size(); j++)
+            for (int j = 0; j < (int)temp_vector.size(); j++)
             {
-                char type[10];
+                string type="";
                 if (temp_vector[j].second.get_action_type() == 1)
-                    sprintf(type, "Post");
+                    type = "Post";
                 else if (temp_vector[j].second.get_action_type() == 2)
-                    sprintf(type, "Comment");
+                    type = "Comment";
                 else
-                    sprintf(type, "Like");
+                    type = "Like";
+                // sprintf(temp, "I read action number %d of type %s posted by user %d at time %s", temp_vector[j].second.get_action_id(), type, temp_vector[j].second.get_user_id(), temp_vector[j].second.get_timestamp());
+                // strcat(log, temp);
 
-                sprintf(temp, "I read action number %d of type %s posted by user %d at time %s", temp_vector[j].second.get_action_id(), type, temp_vector[j].second.get_user_id(), temp_vector[j].second.get_timestamp());
-                strcat(log, temp);
+                log += "I read action number " + to_string(temp_vector[j].second.get_action_id()) + " of type " + type + " posted by user " + to_string(temp_vector[j].second.get_user_id()) + " at time " + to_string(temp_vector[j].second.get_timestamp()) + "\n";
                 /*Append it to sns.log file*/
-                FILE *fp = fopen("sns.log", "a");
-                fprintf(fp, "%s", log);
-                fclose(fp);
-                free(log);
+                // FILE *fp = fopen("sns.log", "a");
+                // fprintf(fp, "%s", log);
+                // fclose(fp);
             }
         }
 
-
         pthread_mutex_unlock(&lock_node[i]);
-        pthread_mutex_unlock(&lock2);
     }
 }
 
 void *pushUpdate(void *arg)
 {
-    // TODO
+   return NULL;
 }
