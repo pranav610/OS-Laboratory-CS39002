@@ -61,7 +61,7 @@ void *userSimulator()
                     sprintf(temp, "Comment ");
                 else
                     sprintf(temp, "Like ");
-                
+
                 strcat(log, temp);
 
                 Action action(node_id, nodes[node_id].wall_queue.size(), action_type);
@@ -76,7 +76,7 @@ void *userSimulator()
                 pthread_mutex_unlock(&lock1);
             }
 
-            cout<<log<<endl;
+            cout << log << endl;
             free(log);
             free(temp);
         }
@@ -84,96 +84,98 @@ void *userSimulator()
     }
 }
 
-void *readPost()
+void *readPost(void* arg)
 {
 
-    while(1)
+    while (1)
     {
         /*Check for any node i whose feed queue has been updated*/
-        for(int i = 1; i <= N_NODES; i++)
+        pthread_mutex_lock(&lock2);
+        pthread_cond_wait(&cond2, &lock2);
+        int i = q2.front();
+        q2.pop();
+
+        pthread_mutex_lock(&lock_node[i]);
+        char *log = new char[10000];
+        char *temp = new char[100];
+        /*Get the chronological order*/
+        bool chronological_order = nodes[i].get_chronological_order();
+        if (chronological_order)
         {
-            pthread_mutex_lock(&lock_nodes[i]);
-            char* log = new char[10000];
-            char* temp = new char[100];
-            /*Get the chronological order*/
-            bool chronological_order = nodes[i].get_chronological_order();
-            if(chronological_order){
-                vector<Action> temp_vector;
-                /*Now store the elements in temp vector in increasing order of time*/
-                while(nodes[i].feed_queue.size())
-                {
-                    Action action = nodes[i].feed_queue.front();
-                    nodes[i].feed_queue.pop();
-                    temp_vector.push_back(action);
-                }
-                /*Now sort the temp vector on incresing order of time*/
-                sort(temp_vector.begin(), temp_vector.end(), [](Action a, Action b){
-                    return a.get_timestamp() < b.get_timestamp();
-                });
-
-                for(int j=0;j<temp_vector.size();j++)
-                {
-                    char type[10];
-                    if(temp_vector[j].get_action_type() == 1)
-                        sprintf(type, "Post");
-                    else if(temp_vector[j].get_action_type() == 2)
-                        sprintf(type, "Comment");
-                    else
-                        sprintf(type, "Like");
-
-                    sprintf(temp, "I read action number %d of type %s posted by user %d at time %s" , temp_vector[j].get_action_id(), type, temp_vector[j].get_user_id() , temp_vector[j].get_timestamp());
-                    strcat(log, temp);
-                    /*Append it to sns.log file*/
-                    FILE* fp = fopen("sns.log", "a");
-                    fprintf(fp, "%s", log);
-                    fclose(fp);
-                    free(log);
-                }
-                    
-
-            }else // Here Priority is set
+            vector<Action> temp_vector;
+            /*Now store the elements in temp vector in increasing order of time*/
+            while (nodes[i].feed_queue.size())
             {
-                vector<pair<int, Action>> temp_vector;
-                /*Now store the elements in temp vector on the basis of number of common nodes*/
-                while(nodes[i].feed_queue.size())
-                {
-                    Action action = nodes[i].feed_queue.front();
-                    nodes[i].feed_queue.pop();
-                    int num_common_nodes = 0;
-                    for(auto v : adj_list[i])
-                    {
-                        if(adj_list[action.get_user_id()].find(v) != adj_list[action.get_user_id()].end())
-                            num_common_nodes++;
-                    }
-                    temp_vector.push_back({num_common_nodes, action});
-                }
-                /*Now sort the temp vector on decreasing order of number of common nodes*/
-                sort(temp_vector.begin(), temp_vector.end(), [](pair<int, Action> a, pair<int, Action> b){
-                    return a.first > b.first;
-                });
-
-                for(int j=0;j<temp_vector.size();j++)
-                {
-                    char type[10];
-                    if(temp_vector[j].second.get_action_type() == 1)
-                        sprintf(type, "Post");
-                    else if(temp_vector[j].second.get_action_type() == 2)
-                        sprintf(type, "Comment");
-                    else
-                        sprintf(type, "Like");
-
-                    sprintf(temp, "I read action number %d of type %s posted by user %d at time %s" , temp_vector[j].second.get_action_id(), type, temp_vector[j].second.get_user_id() , temp_vector[j].second.get_timestamp());
-                    strcat(log, temp);
-                    /*Append it to sns.log file*/
-                    FILE* fp = fopen("sns.log", "a");
-                    fprintf(fp, "%s", log);
-                    fclose(fp);
-                    free(log);
-                }
+                Action action = nodes[i].feed_queue.front();
+                nodes[i].feed_queue.pop();
+                temp_vector.push_back(action);
             }
+            /*Now sort the temp vector on incresing order of time*/
+            sort(temp_vector.begin(), temp_vector.end(), [](Action a, Action b)
+                 { return a.get_timestamp() < b.get_timestamp(); });
 
-            pthread_mutex_unlock(&lock_nodes[i]);
+            for (int j = 0; j < temp_vector.size(); j++)
+            {
+                char type[10];
+                if (temp_vector[j].get_action_type() == 1)
+                    sprintf(type, "Post");
+                else if (temp_vector[j].get_action_type() == 2)
+                    sprintf(type, "Comment");
+                else
+                    sprintf(type, "Like");
+
+                sprintf(temp, "I read action number %d of type %s posted by user %d at time %s", temp_vector[j].get_action_id(), type, temp_vector[j].get_user_id(), temp_vector[j].get_timestamp());
+                strcat(log, temp);
+                /*Append it to sns.log file*/
+                FILE *fp = fopen("sns.log", "a");
+                fprintf(fp, "%s", log);
+                fclose(fp);
+                free(log);
+            }
         }
+        else // Here Priority is set
+        {
+            vector<pair<int, Action>> temp_vector;
+            /*Now store the elements in temp vector on the basis of number of common nodes*/
+            while (nodes[i].feed_queue.size())
+            {
+                Action action = nodes[i].feed_queue.front();
+                nodes[i].feed_queue.pop();
+                int num_common_nodes = 0;
+                for (auto v : adj_list[i])
+                {
+                    if (adj_list[action.get_user_id()].find(v) != adj_list[action.get_user_id()].end())
+                        num_common_nodes++;
+                }
+                temp_vector.push_back({num_common_nodes, action});
+            }
+            /*Now sort the temp vector on decreasing order of number of common nodes*/
+            sort(temp_vector.begin(), temp_vector.end(), [](pair<int, Action> a, pair<int, Action> b)
+                 { return a.first > b.first; });
+
+            for (int j = 0; j < temp_vector.size(); j++)
+            {
+                char type[10];
+                if (temp_vector[j].second.get_action_type() == 1)
+                    sprintf(type, "Post");
+                else if (temp_vector[j].second.get_action_type() == 2)
+                    sprintf(type, "Comment");
+                else
+                    sprintf(type, "Like");
+
+                sprintf(temp, "I read action number %d of type %s posted by user %d at time %s", temp_vector[j].second.get_action_id(), type, temp_vector[j].second.get_user_id(), temp_vector[j].second.get_timestamp());
+                strcat(log, temp);
+                /*Append it to sns.log file*/
+                FILE *fp = fopen("sns.log", "a");
+                fprintf(fp, "%s", log);
+                fclose(fp);
+                free(log);
+            }
+        }
+
+
+        pthread_mutex_unlock(&lock_node[i]);
+        pthread_mutex_unlock(&lock2);
     }
 }
 

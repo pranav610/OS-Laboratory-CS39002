@@ -7,6 +7,7 @@
 
 #define N_THR_READ_POST 10
 #define N_THR_PUSH_UPDATE 25
+#define N_NODES 380000
 using namespace std;
 
 /* Shared graph and node data structre between threads */
@@ -18,9 +19,12 @@ pthread_mutex_t lock1 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lock2 = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond1 = PTHREAD_COND_INITIALIZER;
 pthread_cond_t cond2 = PTHREAD_COND_INITIALIZER;
-
+pthread_mutex_t lock_node[N_NODES];
 int main()
 {
+    /*Intialize lock and cond array*/
+    for (int i = 0; i < N_NODES; i++)pthread_mutex_init(&lock_node[i], NULL);
+    
     /* Seed the random number generator */
     srand(time(NULL));
 
