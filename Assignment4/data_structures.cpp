@@ -4,6 +4,9 @@
 
 Node::Node(int node_id = -1) : node_id(node_id), chronological_order(rand() % 2)
 {
+    this->countActions[0] = 0;
+    this->countActions[1] = 0;
+    this->countActions[2] = 0;
 }
 
 bool Node::get_chronological_order()

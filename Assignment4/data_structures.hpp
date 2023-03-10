@@ -31,6 +31,7 @@ private:
 public:
     queue<Action> wall_queue;
     queue<Action> feed_queue;
+    int countActions[3];
 
     Node(int);
 

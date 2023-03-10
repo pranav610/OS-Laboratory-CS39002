@@ -57,7 +57,7 @@ void *userSimulator(void *arg)
                 continue;
             }
 
-            degree = log2((double)degree);
+            degree = 10*(log2((double)degree)+1);
             // sprintf(temp, "UserSimulator\tLog(Degree) - %d\n", degree);
             // strcat(log, temp);
             // sprintf(temp, "UserSimulator\tActions - ");
@@ -68,12 +68,22 @@ void *userSimulator(void *arg)
             for (int i = 0; i < degree; i++)
             {
                 int action_type = rand() % 3 + 1;
+                
                 if (action_type == 1)
-                    log += "Post ";
+                {
+                    nodes[node_id].countActions[0]++;
+                    log += to_string(nodes[node_id].countActions[0]) + "th " + "Post, ";
+                }
                 else if (action_type == 2)
-                    log += "Comment ";
+                {
+                    nodes[node_id].countActions[1]++;
+                    log += to_string(nodes[node_id].countActions[1]) + "th " + "Comment, ";
+                }
                 else
-                    log += "Like ";
+                {
+                    nodes[node_id].countActions[2]++;
+                    log += to_string(nodes[node_id].countActions[2]) + "th " + "Like, ";
+                }
 
                 Action action(node_id, nodes[node_id].wall_queue.size(), action_type);
                 nodes[node_id].wall_queue.push(action);
@@ -119,11 +129,11 @@ void *pushUpdate(void *arg)
 
             string type = "";
             if (action.get_action_type() == 1)
-                type = "Post";
+                type = "Post   ";
             else if (action.get_action_type() == 2)
-                type = "Comment";
+                type = "Comment   ";
             else
-                type = "Like";
+                type = "Like   ";
 
             // add to sns.log file and print to terminal message in the format: pushUpdate: I pushed action number <action_id> of type <type> posted by user <user_id> at time <timestamp> to the feed queue of node <node_id>
             string msg = "pushUpdate\tI pushed action number " + to_string(action.get_action_id()) + " of type " + type + " posted by user " + to_string(action.get_user_id()) + " at time " + to_string(action.get_timestamp()) + " to the feed queue of node " + to_string(i) + "\n";

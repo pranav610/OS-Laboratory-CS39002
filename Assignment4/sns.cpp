@@ -42,7 +42,7 @@ int main()
     /* Load the static graph to the memory */
     int num_nodes = 0;
 
-    ifstream fin("musae_git_edges.csv");
+    ifstream fin("musae_git_edges_small.csv");
     string line;
     getline(fin, line);
     while (getline(fin, line))
@@ -64,7 +64,7 @@ int main()
 
     adj_list.resize(num_nodes);
 
-    fin.open("musae_git_edges.csv");
+    fin.open("musae_git_edges_small.csv");
 
     getline(fin, line);
 
