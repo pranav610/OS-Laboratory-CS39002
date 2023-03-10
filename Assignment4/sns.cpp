@@ -5,8 +5,8 @@
 #include <unistd.h>
 #include <sys/time.h>
 
-#define N_THR_READ_POST 10
-#define N_THR_PUSH_UPDATE 25
+#define N_THR_READ_POST 2
+#define N_THR_PUSH_UPDATE 2
 #define N_NODES 380000
 using namespace std;
 
@@ -21,8 +21,18 @@ pthread_mutex_t lock2 = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond1 = PTHREAD_COND_INITIALIZER;
 pthread_cond_t cond2 = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t lock_node[N_NODES];
+FILE* fp;
 int main()
-{
+{   
+    // open file for logging
+    fp = fopen("sns.log", "a");
+    if (fp == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+
+
     /*Intialize lock and cond array*/
     for (int i = 0; i < N_NODES; i++)pthread_mutex_init(&lock_node[i], NULL);
     
@@ -100,5 +110,6 @@ int main()
     pthread_cond_destroy(&cond2);
     for (int i = 0; i < N_NODES; i++)pthread_mutex_destroy(&lock_node[i]);
     
+    fclose(fp);
     return 0;
 }

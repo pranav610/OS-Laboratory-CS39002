@@ -19,6 +19,7 @@ extern queue<int> q2;
 extern pthread_mutex_t lock1, lock2;
 extern pthread_cond_t cond1, cond2;
 extern pthread_mutex_t lock_node[N_NODES];
+extern FILE* fp;
 
 void *userSimulator(void *arg)
 {
@@ -26,7 +27,7 @@ void *userSimulator(void *arg)
     {
         set<int> nodes_picked;
         int num_nodes = nodes_picked.size();
-        while (num_nodes < 100)
+        while (num_nodes < 5)
         {
             int node_id = rand() % nodes.size() + 1;
             if (nodes_picked.find(node_id) == nodes_picked.end())
@@ -81,7 +82,7 @@ void *userSimulator(void *arg)
 
                 q1.push(action);
 
-                pthread_cond_signal(&cond1);
+                pthread_cond_broadcast(&cond1);
 
                 pthread_mutex_unlock(&lock1);
             }
@@ -142,6 +143,8 @@ void *readPost(void* arg)
                 // fprintf(fp, "%s", log);
                 // fclose(fp);
                 // free(log);
+                cout << log << endl;
+                fprintf(fp, "%s\n", log.c_str());
             }
         }
         else // Here Priority is set
@@ -181,6 +184,7 @@ void *readPost(void* arg)
                 // FILE *fp = fopen("sns.log", "a");
                 // fprintf(fp, "%s", log);
                 // fclose(fp);
+                cout << log << endl;
             }
         }
 
@@ -190,5 +194,34 @@ void *readPost(void* arg)
 
 void *pushUpdate(void *arg)
 {
-   return NULL;
+    // functionalities: 1) whenever a new action is added to q1, it is pushed to the feed queue of all the nodes in its adjacency list
+    while (1)
+    {   
+        cout << "here1" << endl;
+        pthread_mutex_lock(&lock1);
+        cout << "here4" << endl;
+        pthread_cond_wait(&cond1, &lock1);
+        cout << "here2" << endl;
+        Action action = q1.front();
+        q1.pop();
+        pthread_mutex_unlock(&lock1);
+        
+        for (auto i : adj_list[action.get_user_id()])
+        {   
+            cout << "here3" << endl;
+            pthread_mutex_lock(&lock_node[i]);
+            nodes[i].feed_queue.push(action);
+            pthread_mutex_unlock(&lock_node[i]);
+
+            pthread_mutex_lock(&lock2);
+            q2.push(i);
+            pthread_cond_signal(&cond2);
+            pthread_mutex_unlock(&lock2);
+
+            // add to sns.log file and print to terminal message in the format: pushUpdate: I pushed action number <action_id> of type <type> posted by user <user_id> at time <timestamp> to the feed queue of node <node_id>
+            string msg = "pushUpdate: I pushed action number " + to_string(action.get_action_id()) + " of type " + to_string(action.get_action_type()) + " posted by user " + to_string(action.get_user_id()) + " at time " + to_string(action.get_timestamp()) + " to the feed queue of node " + to_string(i);
+            cout << msg << endl;
+            fprintf(fp, "%s\n", msg.c_str());
+        }
+    }      
 }
