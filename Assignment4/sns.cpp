@@ -5,8 +5,8 @@
 #include <unistd.h>
 #include <sys/time.h>
 
-#define N_THR_READ_POST 2
-#define N_THR_PUSH_UPDATE 2
+#define N_THR_READ_POST 10
+#define N_THR_PUSH_UPDATE 25
 #define N_NODES 380000
 #define MAX_QUEUE_SIZE 1000
 using namespace std;
@@ -33,7 +33,7 @@ FILE *fp;
 int main()
 {
     // open file for logging
-    fp = fopen("sns.log", "a");
+    fp = fopen("sns.log", "w");
     if (fp == NULL)
     {
         printf("Error opening file!\n");
@@ -49,8 +49,8 @@ int main()
 
     /* Load the static graph to the memory */
     int num_nodes = 0;
-
-    ifstream fin("musae_git_edges_small.csv");
+    string file_name = "musae_git_edges.csv";
+    ifstream fin(file_name);
     string line;
     getline(fin, line);
     while (getline(fin, line))
@@ -72,7 +72,7 @@ int main()
 
     adj_list.resize(num_nodes);
 
-    fin.open("musae_git_edges_small.csv");
+    fin.open(file_name);
 
     getline(fin, line);
 

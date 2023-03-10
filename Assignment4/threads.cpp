@@ -32,7 +32,7 @@ void *userSimulator(void *arg)
     {
         set<int> nodes_picked;
         int num_nodes = nodes_picked.size();
-        while (num_nodes < 2)
+        while (num_nodes < 100)
         {
             int node_id = rand() % nodes.size() + 1;
             if (nodes_picked.find(node_id) == nodes_picked.end())
@@ -46,34 +46,22 @@ void *userSimulator(void *arg)
         {
             string log = "";
 
-            // sprintf(temp, "UserSimulator\tNode Selected - %d\n", node_id);
-            // strcat(log, temp);
             log += "UserSimulator\tNode Selected - " + to_string(node_id) + "\n";
 
             int degree = adj_list[node_id].size();
-
-            // sprintf(temp, "UserSimulator\tDegree - %d\n", degree);
-            // strcat(log, temp);
             log += "UserSimulator\tDegree - " + to_string(degree) + "\n";
 
             if (!degree)
-            {
-                cout << log << endl;
-                continue;
-            }
-
-            degree = 1*(log2((double)degree)+2);
-            // sprintf(temp, "UserSimulator\tLog(Degree) - %d\n", degree);
-            // strcat(log, temp);
-            // sprintf(temp, "UserSimulator\tActions - ");
-            // strcat(log, temp);
+                degree = 1;
+            else
+                degree = 10 * (log2((double)degree) + 1);
             log += "UserSimulator\tActions Generated - " + to_string(degree) + "\n";
             log += "UserSimulator\tActions - ";
 
             for (int i = 0; i < degree; i++)
             {
                 int action_type = rand() % 3 + 1;
-                
+
                 if (action_type == 1)
                 {
                     nodes[node_id].countActions[0]++;
@@ -94,18 +82,16 @@ void *userSimulator(void *arg)
                 nodes[node_id].wall_queue.push(action);
 
                 pthread_mutex_lock(&lock1);
-                    while((int)q1.size()==MAX_QUEUE1_SIZE)
-                        pthread_cond_wait(&cond12, &lock1);
-                    q1.push(action);
-                    pthread_cond_signal(&cond11);
+                while ((int)q1.size() == MAX_QUEUE1_SIZE)
+                    pthread_cond_wait(&cond12, &lock1);
+                q1.push(action);
+                pthread_cond_signal(&cond11);
                 pthread_mutex_unlock(&lock1);
-
             }
             log += "\n\n";
             cout << log;
             fprintf(fp, "%s", log.c_str());
         }
-        sleep(5);
         fflush(fp);
         sleep(2 * 60);
     }
@@ -117,31 +103,27 @@ void *pushUpdate(void *arg)
     while (1)
     {
         pthread_mutex_lock(&lock1);
-            while (q1.empty())
-                pthread_cond_wait(&cond11, &lock1);
-            Action action = q1.front();
-            q1.pop();
-            pthread_cond_signal(&cond12);
+        while (q1.empty())
+            pthread_cond_wait(&cond11, &lock1);
+        Action action = q1.front();
+        q1.pop();
+        pthread_cond_signal(&cond12);
         pthread_mutex_unlock(&lock1);
 
         for (auto i : adj_list[action.get_user_id()])
         {
-            // pthread_mutex_lock(&lock_node[i]);
-            // nodes[i].feed_queue.push(action);
-            // pthread_mutex_unlock(&lock_node[i]);
-
             // this thread is a producer for q2
             pthread_mutex_lock(&lock2);
-                while ((int)q2.size() == MAX_QUEUE2_SIZE)
-                    pthread_cond_wait(&cond22, &lock2);
-                if(!is_present[i])
-                    q2.push(i), is_present[i] = true;
+            while ((int)q2.size() == MAX_QUEUE2_SIZE)
+                pthread_cond_wait(&cond22, &lock2);
+            if (!is_present[i])
+                q2.push(i), is_present[i] = true;
 
-                pthread_mutex_lock(&lock_node[i]);
-                    nodes[i].feed_queue.push(action);
-                pthread_mutex_unlock(&lock_node[i]);
+            pthread_mutex_lock(&lock_node[i]);
+            nodes[i].feed_queue.push(action);
+            pthread_mutex_unlock(&lock_node[i]);
 
-                pthread_cond_signal(&cond21);
+            pthread_cond_signal(&cond21);
             pthread_mutex_unlock(&lock2);
 
             string type = "";
@@ -156,6 +138,7 @@ void *pushUpdate(void *arg)
             string msg = "pushUpdate\tI pushed action number " + to_string(action.get_action_id()) + " of type " + type + " posted by user " + to_string(action.get_user_id()) + " at time " + to_string(action.get_timestamp()) + " to the feed queue of node " + to_string(i) + "\n";
             cout << msg;
             fprintf(fp, "%s", msg.c_str());
+            fflush(fp);
         }
     }
 }
@@ -167,24 +150,24 @@ void *readPost(void *arg)
         /*Check for any node i whose feed queue has been updated*/
         // this thread is a consumer for q2
         pthread_mutex_lock(&lock2);
-            while (q2.empty())
-                pthread_cond_wait(&cond21, &lock2);
-            int i = q2.front();
-            q2.pop();
-            is_present[i] = false;
-            pthread_cond_signal(&cond22);
+        while (q2.empty())
+            pthread_cond_wait(&cond21, &lock2);
+        int i = q2.front();
+        q2.pop();
+        is_present[i] = false;
+        pthread_cond_signal(&cond22);
         pthread_mutex_unlock(&lock2);
 
         pthread_mutex_lock(&lock_node[i]);
-            queue<Action> temp_queue(nodes[i].feed_queue);
-            nodes[i].feed_queue = queue<Action>();
+        queue<Action> temp_queue(nodes[i].feed_queue);
+        nodes[i].feed_queue = queue<Action>();
         pthread_mutex_unlock(&lock_node[i]);
-        
+
         string log = "";
         /*Get the chronological order*/
         bool chronological_order = nodes[i].get_chronological_order();
         if (chronological_order)
-        {   
+        {
             vector<Action> temp_vector;
             /*Now store the elements in temp vector in increasing order of time*/
             while (temp_queue.size())
@@ -207,22 +190,16 @@ void *readPost(void *arg)
                 else
                     type = "Like";
 
-                // sprintf(temp, "I read action number %d of type %s posted by user %d at time %s", temp_vector[j].get_action_id(), type, temp_vector[j].get_user_id(), temp_vector[j].get_timestamp());
-                // strcat(log, temp);
+                log = "readPost\tI read   action number " + to_string(temp_vector[j].get_action_id()) + " of type " + type + " posted by user " + to_string(temp_vector[j].get_user_id()) + " at time " + to_string(temp_vector[j].get_timestamp()) + "\n";
 
-                log += "readPost\tI read   action number " + to_string(temp_vector[j].get_action_id()) + " of type " + type + " posted by user " + to_string(temp_vector[j].get_user_id()) + " at time " + to_string(temp_vector[j].get_timestamp()) + "\n";
-                /*Append it to sns.log file*/
-                // FILE *fp = fopen("sns.log", "a");
-                // fprintf(fp, "%s", log);
-                // fclose(fp);
-                // free(log);
                 cout << log;
                 fflush(stdout);
                 fprintf(fp, "%s", log.c_str());
+                fflush(fp);
             }
         }
         else // Here Priority is set
-        {   
+        {
             vector<pair<int, Action>> temp_vector;
             /*Now store the elements in temp vector on the basis of number of common nodes*/
             while (temp_queue.size())
@@ -250,17 +227,13 @@ void *readPost(void *arg)
                     type = "Comment";
                 else
                     type = "Like";
-                // sprintf(temp, "I read action number %d of type %s posted by user %d at time %s", temp_vector[j].second.get_action_id(), type, temp_vector[j].second.get_user_id(), temp_vector[j].second.get_timestamp());
-                // strcat(log, temp);
 
-                log += "readPost\tI read   action number " + to_string(temp_vector[j].second.get_action_id()) + " of type " + type + " posted by user " + to_string(temp_vector[j].second.get_user_id()) + " at time " + to_string(temp_vector[j].second.get_timestamp()) + "\n";
-                /*Append it to sns.log file*/
-                // FILE *fp = fopen("sns.log", "a");
-                // fprintf(fp, "%s", log);
-                // fclose(fp);
+                log = "readPost\tI read   action number " + to_string(temp_vector[j].second.get_action_id()) + " of type " + type + " posted by user " + to_string(temp_vector[j].second.get_user_id()) + " at time " + to_string(temp_vector[j].second.get_timestamp()) + "\n";
+
                 cout << log;
                 fflush(stdout);
                 fprintf(fp, "%s", log.c_str());
+                fflush(fp);
             }
         }
     }
