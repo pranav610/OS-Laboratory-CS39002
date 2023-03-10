@@ -21,9 +21,9 @@ pthread_mutex_t lock2 = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond1 = PTHREAD_COND_INITIALIZER;
 pthread_cond_t cond2 = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t lock_node[N_NODES];
-FILE* fp;
+FILE *fp;
 int main()
-{   
+{
     // open file for logging
     fp = fopen("sns.log", "a");
     if (fp == NULL)
@@ -32,15 +32,15 @@ int main()
         exit(1);
     }
 
-
     /*Intialize lock and cond array*/
-    for (int i = 0; i < N_NODES; i++)pthread_mutex_init(&lock_node[i], NULL);
-    
+    for (int i = 0; i < N_NODES; i++)
+        pthread_mutex_init(&lock_node[i], NULL);
+
     /* Seed the random number generator */
     srand(time(NULL));
 
     /* Load the static graph to the memory */
-    int num_nodes;
+    int num_nodes = 0;
 
     ifstream fin("musae_git_edges.csv");
     string line;
@@ -56,12 +56,18 @@ int main()
         }
         num_nodes = max(num_nodes, max(row[0], row[1]));
     }
+
     num_nodes++;
     fin.close();
 
+    adj_list.clear();
+
     adj_list.resize(num_nodes);
+
     fin.open("musae_git_edges.csv");
+
     getline(fin, line);
+
     while (getline(fin, line))
     {
         stringstream ss(line);
@@ -75,7 +81,7 @@ int main()
         adj_list[row[1]].push_back(row[0]);
     }
     fin.close();
-
+    
     /* Initialize the node data structure */
     // nodes.resize(num_nodes);
     for (int i = 0; i < num_nodes; i++)
@@ -87,7 +93,7 @@ int main()
     pthread_t userSimulatorThread;
     vector<pthread_t> readPostThreads(N_THR_READ_POST);
     vector<pthread_t> pushUpdateThreads(N_THR_PUSH_UPDATE);
-
+    
     /* Creating attributes for the threads */
     pthread_attr_t attr;
     pthread_attr_init(&attr);
@@ -108,8 +114,9 @@ int main()
     pthread_mutex_destroy(&lock2);
     pthread_cond_destroy(&cond1);
     pthread_cond_destroy(&cond2);
-    for (int i = 0; i < N_NODES; i++)pthread_mutex_destroy(&lock_node[i]);
-    
+    for (int i = 0; i < N_NODES; i++)
+        pthread_mutex_destroy(&lock_node[i]);
+
     fclose(fp);
     return 0;
 }
