@@ -62,7 +62,7 @@ void *userSimulator(void *arg)
                 continue;
             }
 
-            degree = 10*(log2((double)degree)+1);
+            degree = 1*(log2((double)degree)+2);
             // sprintf(temp, "UserSimulator\tLog(Degree) - %d\n", degree);
             // strcat(log, temp);
             // sprintf(temp, "UserSimulator\tActions - ");
@@ -94,7 +94,7 @@ void *userSimulator(void *arg)
                 nodes[node_id].wall_queue.push(action);
 
                 pthread_mutex_lock(&lock1);
-                    while(q1.size()==MAX_QUEUE1_SIZE)
+                    while((int)q1.size()==MAX_QUEUE1_SIZE)
                         pthread_cond_wait(&cond12, &lock1);
                     q1.push(action);
                     pthread_cond_signal(&cond11);
@@ -105,6 +105,8 @@ void *userSimulator(void *arg)
             cout << log;
             fprintf(fp, "%s", log.c_str());
         }
+        sleep(5);
+        fflush(fp);
         sleep(2 * 60);
     }
 }
@@ -130,7 +132,7 @@ void *pushUpdate(void *arg)
 
             // this thread is a producer for q2
             pthread_mutex_lock(&lock2);
-                while (q2.size() == MAX_QUEUE2_SIZE)
+                while ((int)q2.size() == MAX_QUEUE2_SIZE)
                     pthread_cond_wait(&cond22, &lock2);
                 if(!is_present[i])
                     q2.push(i), is_present[i] = true;
@@ -175,7 +177,7 @@ void *readPost(void *arg)
 
         pthread_mutex_lock(&lock_node[i]);
             queue<Action> temp_queue(nodes[i].feed_queue);
-            nodes[i].feed_queue.clear();
+            nodes[i].feed_queue = queue<Action>();
         pthread_mutex_unlock(&lock_node[i]);
         
         string log = "";
@@ -215,6 +217,7 @@ void *readPost(void *arg)
                 // fclose(fp);
                 // free(log);
                 cout << log;
+                fflush(stdout);
                 fprintf(fp, "%s", log.c_str());
             }
         }
@@ -256,6 +259,7 @@ void *readPost(void *arg)
                 // fprintf(fp, "%s", log);
                 // fclose(fp);
                 cout << log;
+                fflush(stdout);
                 fprintf(fp, "%s", log.c_str());
             }
         }

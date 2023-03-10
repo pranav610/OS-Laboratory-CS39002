@@ -22,7 +22,8 @@ pthread_mutex_t lock1 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lock2 = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond11 = PTHREAD_COND_INITIALIZER;
 pthread_cond_t cond12 = PTHREAD_COND_INITIALIZER;
-pthread_cond_t cond2 = PTHREAD_COND_INITIALIZER;
+pthread_cond_t cond21 = PTHREAD_COND_INITIALIZER;
+pthread_cond_t cond22 = PTHREAD_COND_INITIALIZER;
 
 pthread_mutex_t lock_node[N_NODES];
 int MAX_DEGREE = 0;
@@ -125,8 +126,10 @@ int main()
 
     pthread_mutex_destroy(&lock1);
     pthread_mutex_destroy(&lock2);
-    pthread_cond_destroy(&cond1);
-    pthread_cond_destroy(&cond2);
+    pthread_cond_destroy(&cond11);
+    pthread_cond_destroy(&cond12);
+    pthread_cond_destroy(&cond21);
+    pthread_cond_destroy(&cond22);
     for (int i = 0; i < N_NODES; i++)
         pthread_mutex_destroy(&lock_node[i]);
 

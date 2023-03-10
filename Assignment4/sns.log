@@ -1,608 +1,89 @@
+UserSimulator	Node Selected - 12
+UserSimulator	Degree - 3
+UserSimulator	Actions Generated - 3
+UserSimulator	Actions - 1th Like, 2th Like, 3th Like, 
+
+UserSimulator	Node Selected - 17
+UserSimulator	Degree - 1
+UserSimulator	Actions Generated - 2
+UserSimulator	Actions - 1th Comment, 1th Post, 
+
+pushUpdate	I pushed action number 0 of type Like    posted by user 12 at time 1678462852 to the feed queue of node 4
+pushUpdate	I pushed action number 0 of type Like    posted by user 12 at time 1678462852 to the feed queue of node 18
+pushUpdate	I pushed action number 0 of type Like    posted by user 12 at time 1678462852 to the feed queue of node 13
+readPost	I read   action number 0 of type Like posted by user 12 at time 1678462852
+pushUpdate	I pushed action number 1 of type Like    posted by user 12 at time 1678462852 to the feed queue of node 4
+pushUpdate	I pushed action number 2 of type Like    posted by user 12 at time 1678462852 to the feed queue of node 4
+pushUpdate	I pushed action number 2 of type Like    posted by user 12 at time 1678462852 to the feed queue of node 18
+pushUpdate	I pushed action number 2 of type Like    posted by user 12 at time 1678462852 to the feed queue of node 13
+pushUpdate	I pushed action number 1 of type Like    posted by user 12 at time 1678462852 to the feed queue of node 18
+pushUpdate	I pushed action number 1 of type Like    posted by user 12 at time 1678462852 to the feed queue of node 13
+readPost	I read   action number 1 of type Like posted by user 12 at time 1678462852
+pushUpdate	I pushed action number 0 of type Comment    posted by user 17 at time 1678462852 to the feed queue of node 13
+readPost	I read   action number 0 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 0 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 2 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 0 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 2 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 0 of type Comment posted by user 17 at time 1678462852
+readPost	I read   action number 0 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 0 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 1 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 0 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 1 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 2 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 0 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 2 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 0 of type Comment posted by user 17 at time 1678462852
+readPost	I read   action number 1 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 0 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 2 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 0 of type Comment posted by user 17 at time 1678462852
+readPost	I read   action number 1 of type Like posted by user 12 at time 1678462852
+readPost	I read   action number 1 of type Post posted by user 17 at time 1678462852
+readPost	I read   action number 2 of type Like posted by user 12 at time 1678462852
+pushUpdate	I pushed action number 1 of type Post    posted by user 17 at time 1678462852 to the feed queue of node 13
 UserSimulator	Node Selected - 13
 UserSimulator	Degree - 5
-UserSimulator	Actions Generated - 33
-UserSimulator	Actions - Post    Like    Like    Post    Comment Like    Post    Comment Post    Like    Post    Like    Like    Post    Comment Post    Like    Post    Like    Like    Post    Comment Post    Comment Post    Post    Like    Comment Comment Like    Like    Like    Like    
+UserSimulator	Actions Generated - 4
+UserSimulator	Actions - 1th Like, 1th Comment, 2th Like, 2th Comment, 
 
-readPost	I read   action number 0 of type Post posted by user 13 at time 1678457132
-UserSimulator	Node Selected - 18
-UserSimulator	Degree - 1
-UserSimulator	Actions Generated - 10
-UserSimulator	Actions - Comment Like    Comment Post    Comment Like    Comment Post    Post    Comment 
-
-pushUpdate	I pushed action number 0 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 0 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 0 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 0 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 0 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 16
-readPost	I read   action number 1 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 0 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 1 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-readPost	I read   action number 0 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 2 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-readPost	I read   action number 0 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 2 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 0 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 1 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 1 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-readPost	I read   action number 1 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 1 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 1 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 2 of type Like posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 2 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 1 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 1 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-readPost	I read   action number 2 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 3 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 3 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 3 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 3 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 3 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 2 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 2 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-readPost	I read   action number 1 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 3 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 3 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 3 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 4 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 4 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 4 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 2 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-readPost	I read   action number 3 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 5 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 5 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 5 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-readPost	I read   action number 3 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 2 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 3 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 3 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 2 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 4 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 4 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 5 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 4 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 4 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 5 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 4 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 4 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 5 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 4 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 4 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 5 of type Like posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 4 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 5 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 5 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-readPost	I read   action number 4 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 4 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 5 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 6 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 6 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 4 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 6 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 6 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 6 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 8 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 8 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 8 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 8 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 8 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 9 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 9 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 9 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 9 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 9 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 10 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 10 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 10 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 10 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 10 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 11 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 11 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 11 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 11 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 11 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 12 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 12 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 12 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 12 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 12 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 13 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 7 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 12
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 11 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 11 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 12 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 11 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 11 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 12 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 11 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 11 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 12 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 11 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 6 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 11 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 12 of type Like posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 13 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 13 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 13 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 13 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 7 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 7 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 7 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 7 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 16
-readPost	I read   action number 7 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 7 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 7 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 7 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 7 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 11 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 7 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 11 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 12 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 7 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 8 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 9 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 10 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 11 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 12 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 13 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 13 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 13 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 7 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 13 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 13 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 7 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 13 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 13 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 7 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 13 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 13 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 7 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 14 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 14 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 14 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 14 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 14 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 16 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 16 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 16 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 16 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 16 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 17 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 17 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 17 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 17 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 17 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 18 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 16 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 16 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 17 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 15 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 12
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 16 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 16 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 17 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 16 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 16 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 17 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 15 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 15 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 16 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 15 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 16 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 17 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 15 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 16 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 17 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 18 of type Like posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 18 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 18 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 15 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 15 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 14
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 16 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 15 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 15 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 18 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 14 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 16 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 17 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 18 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 18 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 15 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 15 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 18 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 18 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 19 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 19 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 19 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 15 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 20 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 20 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 20 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 14
-readPost	I read   action number 18 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 18 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 15 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 18 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 19 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 19 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 20 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 18 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 15 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 19 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 19 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 20 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 19 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 19 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 21 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 21 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 17
-readPost	I read   action number 19 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 19 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 20 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 19 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 19 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 20 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 21 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 14
-readPost	I read   action number 21 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 21 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 21 of type Comment posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 21 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 20 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 15
-readPost	I read   action number 19 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 21 of type Comment posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 21 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 22 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 22 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 22 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 22 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 20 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 16
-readPost	I read   action number 21 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 21 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 20 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 23 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 12
-readPost	I read   action number 22 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 22 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 23 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 22 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 22 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 22 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 22 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 22 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 23 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 17
-readPost	I read   action number 23 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 23 of type Comment posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 23 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 23 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 23 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 16
-readPost	I read   action number 23 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 23 of type Comment posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 24 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 12
-readPost	I read   action number 24 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 24 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 24 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 24 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 15
-readPost	I read   action number 24 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 24 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 24 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 25 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 12
-readPost	I read   action number 24 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 24 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 25 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 25 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 25 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 25 of type Post    posted by user 13 at time 1678457132 to the feed queue of node 16
-readPost	I read   action number 25 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 25 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 27 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 26 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-readPost	I read   action number 25 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 25 of type Post posted by user 13 at time 1678457132
-readPost	I read   action number 26 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 26 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 27 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 25 of type Post posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 27 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 27 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 27 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 27 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 26 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 26 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 26 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 26 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 29 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-readPost	I read   action number 27 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 27 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 26 of type Like posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 28 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 12
-readPost	I read   action number 27 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 27 of type Comment posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 29 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 28 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 17
-readPost	I read   action number 27 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 26 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 27 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 26 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 27 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 27 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 26 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 28 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 28 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 29 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 29 of type Like posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 29 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 28 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 14
-readPost	I read   action number 29 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 28 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 29 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 29 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 28 of type Comment posted by user 13 at time 1678457132
-readPost	I read   action number 29 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 29 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 28 of type Comment posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 29 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 28 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 29 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 30 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 30 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 30 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-pushUpdate	I pushed action number 30 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-readPost	I read   action number 29 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 29 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 28 of type Comment posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 28 of type Comment    posted by user 13 at time 1678457132 to the feed queue of node 16
-readPost	I read   action number 30 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 30 of type Like posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 30 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-pushUpdate	I pushed action number 32 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 32 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-pushUpdate	I pushed action number 31 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 12
-pushUpdate	I pushed action number 31 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 17
-readPost	I read   action number 30 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 31 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 31 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 32 of type Like posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 31 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 14
-readPost	I read   action number 30 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 32 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 32 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 31 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 32 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 32 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 31 of type Like posted by user 13 at time 1678457132
-readPost	I read   action number 30 of type Like posted by user 13 at time 1678457132
-pushUpdate	I pushed action number 31 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 15
-pushUpdate	I pushed action number 31 of type Like    posted by user 13 at time 1678457132 to the feed queue of node 16
-readPost	I read   action number 31 of type Like posted by user 13 at time 1678457132
-reUserSimulator	Node Selected - 2
-UserSimulator	Degree - 1
-UserSimulator	Actions Generated - 10
-UserSimulator	Actions - 1th Post 2th Post 1th Comment 3th Post 1th Like 4th Post 2th Like 3th Like 5th Post 4th Like 
-
-pushUpdate	I pushed action number 0 of type Post    posted by user 2 at time 1678457830 to the feed queue of node 1
-UserSimulator	Node Selected - 15
-UserSimulator	Degree - 1
-UserSimulator	Actions Generated - 10
-UserSimulator	Actions - 1th Comment 1th Like 2th Like 2th Comment 3th Comment 4th Comment 5th Comment 3th Like 4th Like 5th Like 
-
-readPost	I read   action number 0 of type Post posted by user 2 at time 1678457830
-pushUpdate	I pushed action number 1 of type Post    posted by user 2 at time 1678457830 to the feed queue of node 1
-pushUpdate	I pushed action number 3 of type Post    posted by user 2 at time 1678457830 to the feed queue of node 1
-readPost	I read   action number 1 of type Post posted by user 2 at time 1678457830
-readPost	I read   action number 1 of type Post posted by user 2 at time 1678457830
-readPost	I read   action number 3 of type Post posted by user 2 at time 1678457830
-readPost	I read   action number 1 of type Post posted by user 2 at time 1678457830
-readPost	I read   action number 3 of type Post posted by user 2 at time 1678457830
-readPost	I read   action number 2 of type Comment posted by user 2 at time 1678457830
-pushUpdate	I pushed action number 2 of type Comment    posted by user 2 at time 1678457830 to the feed queue of node 1
-pushUpdate	I pushed action number 4 of type Like    posted by user 2 at time 1678457830 to the feed queue of node 1
-readPost	I read   action number 4 of type Like posted by user 2 at time 1678457830
-pushUpdate	I pushed action number 5 of type Post    posted by user 2 at time 1678457830 to the feed queue of node 1
-pushUpdate	I pushed action number 6 of type Like    posted by user 2 at time 1678457830 to the feed queue of node 1
-readPost	I read   action number 5 of type Post posted by user 2 at time 1678457830
-readPost	I read   action number 5 of type Post posted by user 2 at time 1678457830
-readPost	I read   action number 6 of type Like posted by user 2 at time 1678457830
-pushUpdate	I pushed action number 7 of type Like    posted by user 2 at time 1678457830 to the feed queue of node 1
-pushUpdate	I pushed action number 8 of type Post    posted by user 2 at time 1678457830 to the feed queue of node 1
-pushUpdate	I pushed action number 0 of type Comment    posted by user 15 at time 1678457830 to the feed queue of node 13
-pushUpdate	I pushed action number 9 of type Like    posted by user 2 at time 1678457830 to the feed queue of node 1
-pushUpdate	I pushed action number 2 of type Like    posted by user 15 at time 1678457830 to the feed queue of node 13
-pushUpdate	I pushed action number 3 of type Comment    posted by user 15 at time 1678457830 to the feed queue of node 13
-pushUpdate	I pushed action number 4 of type Comment    posted by user 15 at time 1678457830 to the feed queue of node 13
-pushUpdate	I pushed action number 5 of type Comment    posted by user 15 at time 1678457830 to the feed queue of node 13
-pushUpdate	I pushed action number 6 of type Comment    posted by user 15 at time 1678457830 to the feed queue of node 13
-pushUpdate	I pushed action number 7 of type Like    posted by user 15 at time 1678457830 to the feed queue of node 13
-pushUpdate	I pushed action number 8 of type Like    posted by user 15 at time 1678457830 to the feed queue of node 13
-pushUpdate	I pushed action number 9 of type Like    posted by user 15 at time 1678457830 to the feed queue of node 13
-readPost	I read   action number 7 of type Like posted by user 2 at time 1678457830
-readPost	I read   action number 7 of type Like posted by user 2 at time 1678457830
-readPost	I read   action number 8 of type Post posted by user 2 at time 1678457830
-pushUpdate	I pushed action number 1 of type Like    posted by user 15 at time 1678457830 to the feed queue of node 13
-readPost	I read   action number 7 of type Like posted by user 2 at time 1678457830
-readPost	I read   action number 8 of type Post posted by user 2 at time 1678457830
-readPost	I read   action number 9 of type Like posted by user 2 at time 1678457830
-readPost	I read   action number 0 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 0 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 1 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 0 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 1 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 2 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 0 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 1 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 2 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 3 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 0 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 1 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 2 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 3 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 4 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 0 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 1 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 2 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 3 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 4 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 5 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 0 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 1 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 2 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 3 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 4 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 5 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 6 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 0 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 1 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 2 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 3 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 4 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 5 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 6 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 7 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 0 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 1 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 2 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 3 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 4 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 5 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 6 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 7 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 8 of type Like posted by user 15 at time 1678457830
-readPost	I read   action number 0 of type Comment posted by user 15 at time 1678457830
-readPost	I read   action number 1pushUpdate	I pushed action number 0 of type Comment    posted by user 2 at time 1678457873 to the feed queue of node 1
-readPost	I read   action number 0 of type Comment posted by user 2 at time 1678457873
-UserSimulator	Node Selected - 2
-UserSimulator	Degree - 1
-UserSimulator	Actions Generated - 10
-UserSimulator	Actions - 1th Comment, 2th Comment, 1th Post, 3th Comment, 1th Like, 2th Post, 4th Comment, 3th Post, 2th Like, 5th Comment, 
-
-pushUpdate	I pushed action number 1 of type Comment    posted by user 2 at time 1678457873 to the feed queue of node 1
-readPost	I read   action number 1 of type Comment posted by user 2 at time 1678457873
-UserSimulator	Node Selected - 15
-UserSimulator	Degree - 1
-UserSimulator	Actions Generated - 10
-UserSimulator	Actions - 1th Post, 2th Post, 1th Like, 3th Post, 2th Like, 4th Post, 3th Like, 1th Comment, 2th Comment, 4th Like, 
-
-readPost	I read   action number 2 of type Post posted by user 2 at time 1678457873
-pushUpdate	I pushed action number 2 of type Post    posted by user 2 at time 1678457873 to the feed queue of node 1
-pushUpdate	I pushed action number 4 of type Like    posted by user 2 at time 1678457873 to the feed queue of node 1
-pushUpdate	I pushed action number 3 of type Comment    posted by user 2 at time 1678457873 to the feed queue of node 1
-pushUpdate	I pushed action number 6 of type Comment    posted by user 2 at time 1678457873 to the feed queue of node 1
-readPost	I read   action number 4 of type Like posted by user 2 at time 1678457873
-readPost	I read   action number 4 of type Like posted by user 2 at time 1678457873
-readPost	I read   action number 3 of type Comment posted by user 2 at time 1678457873
-readPost	I read   action number 4 of type Like posted by user 2 at time 1678457873
-readPost	I read   action number 3 of type Comment posted by user 2 at time 1678457873
-readPost	I read   action number 5 of type Post posted by user 2 at time 1678457873
-readPost	I read   action number 4 of type Like posted by user 2 at time 1678457873
-readPost	I read   action number 3 of type Comment posted by user 2 at time 1678457873
-readPost	I read   action number 5 of type Post posted by user 2 at time 1678457873
-readPost	I read   action number 6 of type Comment posted by user 2 at time 1678457873
-pushUpdate	I pushed action number 5 of type Post    posted by user 2 at time 1678457873 to the feed queue of node 1
-pushUpdate	I pushed action number 7 of type Post    posted by user 2 at time 1678457873 to the feed queue of node 1
-readPost	I read   action number 7 of type Post posted by user 2 at time 1678457873
-readPost	I read   action number 7 of type Post posted by user 2 at time 1678457873
-readPost	I read   action number 8 of type Like posted by user 2 at time 1678457873
-pushUpdate	I pushed action number 8 of type Like    posted by user 2 at time 1678457873 to the feed queue of node 1
-pushUpdate	I pushed action number 0 of type Post    posted by user 15 at time 1678457873 to the feed queue of node 13
-readPost	I read   action number 0 of type Post posted by user 15 at time 1678457873
-pushUpdate	I pushed action number 9 of type Comment    posted by user 2 at time 1678457873 to the feed queue of node 1
-readPost	I read   action number 9 of type Comment posted by user 2 at time 1678457873
-pushUpdate	I pushed action number 1 of type Post    posted by user 15 at time 1678457873 to the feed queue of node 13
-readPost	I read   action number 1 of type Post posted by user 15 at time 1678457873
-readPost	I read   action number 1 of type Post posted by user 15 at time 1678457873
-readPost	I read   action number 2 of type Like posted by user 15 at time 1678457873
-pushUpdate	I pushed action number 2 of type Like    posted by user 15 at time 1678457873 to the feed queue of node 13
-pushUpdate	I pushed action number 3 of type Post    posted by user 15 at time 1678457873 to the feed queue of node 13
-pushUpdate	I pushed action number 4 of type Like    posted by user 15 at time 1678457873 to the feed queue of node 13
-readPost	I read   action number 3 of type Post posted by user 15 at time 1678457873
-readPost	I read  
+pushUpdate	I pushed action number 1 of type Comment    posted by user 13 at time 1678463620 to the feed queue of node 12
+pushUpdate	I pushed action number 0 of type Like    posted by user 13 at time 1678463620 to the feed queue of node 12
+pushUpdate	I pushed action number 1 of type Comment    posted by user 13 at time 1678463620 to the feed queue of node 17
+readPost	I read   action number 0 of type Like posted by user 13 at time 1678463620
+readPost	I read   action number 0 of type Like posted by user 13 at time 1678463620
+readPost	I read   action number 1 of type Comment posted by user 13 at time 1678463620
+readPost	I read   action number 1 of type Comment posted by user 13 at time 1678463620
+pushUpdate	I pushed action number 0 of type Like    posted by user 13 at time 1678463620 to the feed queue of node 17
+pushUpdate	I pushed action number 0 of type Like    posted by user 13 at time 1678463620 to the feed queue of node 14
+pushUpdate	I pushed action number 0 of type Like    posted by user 13 at time 1678463620 to the feed queue of node 15
+readPost	I read   action number 1 of type Comment posted by user 13 at time 1678463620
+readPost	I read   action number 1 of type Comment posted by user 13 at time 1678463620
+readPost	I read   action number 0 of type Like posted by user 13 at time 1678463620
+readPost	I read   action number 0 of type Like posted by user 13 at time 1678463620
+pushUpdate	I pushed action number 0 of type Like    posted by user 13 at time 1678463620 to the feed queue of node 16
+pushUpdate	I pushed action number 2 of type Like    posted by user 13 at time 1678463620 to the feed queue of node 12
+pushUpdate	I pushed action number 2 of type Like    posted by user 13 at time 1678463620 to the feed queue of node 17
+readPost	I read   action number 0 of type Like posted by user 13 at time 1678463620
+readPost	I read   action number 2 of type Like posted by user 13 at time 1678463620
+readPost	I read   action number 0 of type Like posted by user 13 at time 1678463620
+pushUpdate	I pushed action number 1 of type Comment    posted by user 13 at time 1678463620 to the feed queue of node 14
+pushUpdate	I pushed action number 1 of type Comment    posted by user 13 at time 1678463620 to the feed queue of node 15
+pushUpdate	I pushed action number 1 of type Comment    posted by user 13 at time 1678463620 to the feed queue of node 16
+pushUpdate	I pushed action number 3 of type Comment    posted by user 13 at time 1678463620 to the feed queue of node 12
+pushUpdate	I pushed action number 3 of type Comment    posted by user 13 at time 1678463620 to the feed queue of node 17
+pushUpdate	I pushed action number 3 of type Comment    posted by user 13 at time 1678463620 to the feed queue of node 14
+pushUpdate	I pushed action number 3 of type Comment    posted by user 13 at time 1678463620 to the feed queue of node 15
+pushUpdate	I pushed action number 2 of type Like    posted by user 13 at time 1678463620 to the feed queue of node 14
+readPost	I read   action number 2 of type Like posted by user 13 at time 1678463620
+readPost	I read   action number 1 of type Comment posted by user 13 at time 1678463620
+readPost	I read   action number 2 of type Like posted by user 13 at time 1678463620
+pushUpdate	I pushed action number 3 of type Comment    posted by user 13 at time 1678463620 to the feed queue of node 16
+pushUpdate	I pushed action number 2 of type Like    posted by user 13 at time 1678463620 to the feed queue of node 15
+pushUpdate	I pushed action number 2 of type Like    posted by user 13 at time 1678463620 to the feed queue of node 16
+readPost	I read   action number 1 of type Comment posted by user 13 at time 1678463620
+readPost	I read   action number 3 of type Comment posted by user 13 at time 1678463620
+readPost	I read   action number 1 of type Comment posted by user 13 at time 1678463620
+readPost	I read   action number 3 of type Comment posted by user 13 at time 1678463620
+r
