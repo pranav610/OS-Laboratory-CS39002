@@ -7,7 +7,6 @@
 
 #define N_THR_READ_POST 10
 #define N_THR_PUSH_UPDATE 25
-#define N_NODES 380000
 #define MAX_QUEUE_SIZE 1000
 using namespace std;
 
@@ -15,15 +14,17 @@ using namespace std;
 vector<vector<int>> adj_list;
 vector<Node> nodes;
 
+const int N_NODES = 37705;
+
 queue<Action> q1;
 queue<int> q2;
 vector<bool> is_present(N_NODES, false);
 pthread_mutex_t lock1 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lock2 = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t cond11 = PTHREAD_COND_INITIALIZER;
-pthread_cond_t cond12 = PTHREAD_COND_INITIALIZER;
-pthread_cond_t cond21 = PTHREAD_COND_INITIALIZER;
-pthread_cond_t cond22 = PTHREAD_COND_INITIALIZER;
+pthread_cond_t q1_added = PTHREAD_COND_INITIALIZER;
+pthread_cond_t q1_full = PTHREAD_COND_INITIALIZER;
+pthread_cond_t q2_added = PTHREAD_COND_INITIALIZER;
+pthread_cond_t q2_full = PTHREAD_COND_INITIALIZER;
 
 pthread_mutex_t lock_node[N_NODES];
 int MAX_DEGREE = 0;
@@ -126,10 +127,10 @@ int main()
 
     pthread_mutex_destroy(&lock1);
     pthread_mutex_destroy(&lock2);
-    pthread_cond_destroy(&cond11);
-    pthread_cond_destroy(&cond12);
-    pthread_cond_destroy(&cond21);
-    pthread_cond_destroy(&cond22);
+    pthread_cond_destroy(&q1_added);
+    pthread_cond_destroy(&q1_full);
+    pthread_cond_destroy(&q2_added);
+    pthread_cond_destroy(&q2_full);
     for (int i = 0; i < N_NODES; i++)
         pthread_mutex_destroy(&lock_node[i]);
 
