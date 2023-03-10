@@ -95,7 +95,7 @@ int main()
         MAX_DEGREE = max(MAX_DEGREE, (int)adj.size());
     
     MAX_QUEUE1_SIZE = 10*(1+log2(MAX_DEGREE)) * 100;
-    MAX_QUEUE2_SIZE = N_NODES;
+    MAX_QUEUE2_SIZE = min(N_NODES,100*MAX_DEGREE);
     
     /* Initialize the node data structure */
     // nodes.resize(num_nodes);
