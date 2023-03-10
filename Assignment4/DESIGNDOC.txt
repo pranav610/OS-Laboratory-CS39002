@@ -7,4 +7,32 @@ Pranav Kulkarni - 20CS30029
 Swapnil Yasasvi - 20CS30054
 
 Data Structures Used:
-1. 
+1. Adjacency List -
+    type - vector<vector<int>> adj_list
+    size - 37700 x 37700 = num_nodes x num_nodes (at max)
+2. Action Data Structure -
+    type - class {
+                    int user_id;
+                    int action_id;
+                    int action_type;
+                    time_t timestamp;
+                 }
+    size - 4
+3. Node Data Structure -
+    type - class {
+                    int node_id;
+                    bool chronological_order;
+                    queue<Action Data Structure> wall_queue;
+                    queue<Action Data Structure> feed_queue;
+                 }
+    size - ( 2 + 2 x queue_size )
+    queue_size - Assuming that the pushUpdate and readPost threads are able to complete their work in 2 mins, this assumptions arrives from the fact that the userSimulator sleeps for 2 mins after doing its work. The queue size will be at most K(1 + log_2 degree), where K = 10 and degree = 37700 (at max).
+4. Node array -
+    type - vector<Node Data Structure>
+    size - 37700 = num_nodes
+5. Action queue - 
+    type - queue<Action Data Structure>
+    size - 
+6. Another Queue - 
+    type - queue<int>
+    size - 
