@@ -8,6 +8,7 @@
 #define N_THR_READ_POST 2
 #define N_THR_PUSH_UPDATE 2
 #define N_NODES 380000
+#define MAX_QUEUE_SIZE 1000
 using namespace std;
 
 /* Shared graph and node data structre between threads */
@@ -16,11 +17,17 @@ vector<Node> nodes;
 
 queue<Action> q1;
 queue<int> q2;
+vector<bool> is_present(N_NODES, false);
 pthread_mutex_t lock1 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lock2 = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t cond1 = PTHREAD_COND_INITIALIZER;
+pthread_cond_t cond11 = PTHREAD_COND_INITIALIZER;
+pthread_cond_t cond12 = PTHREAD_COND_INITIALIZER;
 pthread_cond_t cond2 = PTHREAD_COND_INITIALIZER;
+
 pthread_mutex_t lock_node[N_NODES];
+int MAX_DEGREE = 0;
+int MAX_QUEUE1_SIZE = 0;
+int MAX_QUEUE2_SIZE = 0;
 FILE *fp;
 int main()
 {
@@ -81,6 +88,12 @@ int main()
         adj_list[row[1]].push_back(row[0]);
     }
     fin.close();
+
+    for(auto adj: adj_list)
+        MAX_DEGREE = max(MAX_DEGREE, (int)adj.size());
+    
+    MAX_QUEUE1_SIZE = 10*(1+log2(MAX_DEGREE)) * 100;
+    MAX_QUEUE2_SIZE = N_NODES;
     
     /* Initialize the node data structure */
     // nodes.resize(num_nodes);
