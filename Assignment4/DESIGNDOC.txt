@@ -7,32 +7,68 @@ Pranav Kulkarni - 20CS30029
 Swapnil Yasasvi - 20CS30054
 
 Data Structures Used:
-1. Adjacency List -
-    type - vector<vector<int>> adj_list
-    size - 37700 x 37700 = num_nodes x num_nodes (at max)
-2. Action Data Structure -
-    type - class {
-                    int user_id;
-                    int action_id;
-                    int action_type;
-                    time_t timestamp;
-                 }
-    size - 4
-3. Node Data Structure -
-    type - class {
-                    int node_id;
-                    bool chronological_order;
-                    queue<Action Data Structure> wall_queue;
-                    queue<Action Data Structure> feed_queue;
-                 }
-    size - ( 2 + 2 x queue_size )
-    queue_size - Assuming that the pushUpdate and readPost threads are able to complete their work in 2 mins, this assumptions arrives from the fact that the userSimulator sleeps for 2 mins after doing its work. The queue size will be at most K(1 + log_2 degree), where K = 10 and degree = 37700 (at max).
-4. Node array -
-    type - vector<Node Data Structure>
-    size - 37700 = num_nodes
-5. Action queue - 
-    type - queue<Action Data Structure>
-    size - 
-6. Another Queue - 
-    type - queue<int>
-    size - 
+    1. Adjacency List -
+        type - vector<vector<int>> adj_list
+        size - N_NODES x MAX_DEGREE
+        
+    2. Action Data Structure -
+        type - class {
+                        int user_id;
+                        int action_id;
+                        int action_type;
+                        time_t timestamp;
+                     }
+        size - CONSTANT(16 bytes)
+
+    3. Node Data Structure -
+        type - class {
+                        int node_id;
+                        bool chronological_order;
+                        queue<Action Data Structure> wall_queue;
+                        queue<Action Data Structure> feed_queue;
+                        int countActions[3];
+                     }
+        size - ( sizeof int + sizeof bool + 2 x queue_size )
+        wall_queue size - size depended on the number of actions performed by the user on his wall.
+        feed_queue size - size depended on the number of actions performed by the user's neighbour.
+        
+    4. Node array -
+        type - vector<Node Data Structure>
+        size - N_NODES
+
+    5. Action queue - q1(used by userSimulatorThread and pushUpdateThreads)
+        type - queue<Action Data Structure>
+        size - MAX_QUEUE1_SIZE(10*(1+log2(MAX_DEGREE)) * 100)
+        In each thread UserSimulator we are iterating over atmost 100 nodes and for each node we are pushing atmost 10*(1+log2(MAX_DEGREE)) actions in the queue. So the size of the queue will be at most 10*(1+log2(MAX_DEGREE)) * 100.
+
+    6. Node_id Queue - q2(used by pushUpdateThreads and readPostThreads)
+        type - queue<int>
+        size - min(N_NODES,100*MAX_DEGREE)
+        In each thread pushUpdate we are receiving action updates for atmost 100 poster nodes and for each node we are pushing atmost MAX_DEGREE nodes in the queue. So the size of the queue will be at most 100*MAX_DEGREE. But if the number of nodes are less than 100*MAX_DEGREE then we will push only the node ids of the nodes in the queue.
+
+
+Locks and Conditional Variables
+    Used Locks
+        lock1 
+        lock2
+        lock_node[N_NODES]
+
+    Used Conditional Variables
+        cond11
+        cond12
+        cond21
+        cond22
+
+    Race Condtions
+        Usage for Locks
+            lock1 - It is used to avoid the race conditon between userSimulatorThread and pushUpdateThreads to update the action queue q1
+            lock2 - It is used to avoid the race conditon between pushUpdateThreads and readPostThreads to update the node_id queue q2 contaning the node id of neighbour nodes
+            lock_node[i]- For ith node it will avoid the race condtion among pushUpdateThreads , readPostThreads to modify the feed_queue for node i.
+            Total number of locks used = 2 + N_NODES
+
+            Usage of Conditional Variables -
+                Pthread conditional variables are used to avoid the classical problem of producer-consumer i.e. the producer should wait or block until the buffer is full and the consumer should wait or block until the buffer is empty.
+                cond11 - Conditional variable used to block the pushUpdate thread until the action queue q1 does not have any Action to be processed or consumed.
+                cond12 - Conditional variable used to block the userSimulator thread until the action queue q1 does not have an empty space to push the new Action.
+                cond21 - Conditional variable used to block the readPost thread until the node_id queue q2 does not have any node id to be processed or consumed.
+                cond22 - Conditional variable used to block the pushUpdate thread until the node_id queue q2 does not have an empty space to push the new node id.
