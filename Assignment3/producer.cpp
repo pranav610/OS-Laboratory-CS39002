@@ -4,6 +4,7 @@
 #include <sys/shm.h>
 #include <iostream>
 #include <sstream>
+#include <unistd.h>
 
 using namespace std;
 
