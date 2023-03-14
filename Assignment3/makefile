@@ -12,4 +12,4 @@ consumer: consumer.cpp
 
 clean: 
 	rm -f main producer consumer
-	?.txt
+	rm -f ?.txt

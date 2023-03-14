@@ -5,15 +5,24 @@
 #include <sys/wait.h>
 #include <iostream>
 #include <string.h>
+#include <unistd.h>
 
 using namespace std;
 
 #define CONSUMER_COUNT 10
 
+int shmid;
+void ctrlc_handler(int sig)
+{
+    shmctl(shmid, IPC_RMID, NULL);
+    exit(EXIT_SUCCESS);
+}
+
 int main(int argc, char const *argv[])
 {
-    if (argc > 1)
-        if (strcmp(argv[1], "-optimize") != 0)
+    signal(SIGINT, ctrlc_handler);
+    if(argc > 1)
+        if(strcmp(argv[1], "-optimize") != 0)
             printf("Command incorrect!\n"), exit(EXIT_FAILURE);
 
     key_t unique_key = ftok("./shared_memory_file", 15);
@@ -36,7 +45,7 @@ int main(int argc, char const *argv[])
         graph += c;
     }
 
-    int shmid = shmget(unique_key, graph.length() + 5, IPC_CREAT | 0666);
+    shmid = shmget(unique_key, graph.length() + 5, IPC_CREAT | 0666);
     if (shmid == -1)
     {
         perror("shmget");
@@ -68,7 +77,7 @@ int main(int argc, char const *argv[])
         }
     }
 
-    for (int i = 0; i < CONSUMER_COUNT + 1; ++i)
+    for(int i = 0; i < CONSUMER_COUNT; ++i)
         wait(NULL);
     wait(NULL);
 
@@ -80,7 +89,7 @@ int main(int argc, char const *argv[])
     }
 
     str = (char *)shmat(shmid, (void *)0, 0);
-    // cout<<"Graph:\n"<<str<<endl;
+    // printf("%s\n", str);
 
     shmdt(str);
     shmctl(shmid, IPC_RMID, NULL);
