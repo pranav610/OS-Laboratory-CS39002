@@ -8,18 +8,7 @@ extern vector<pthread_mutex_t> room_mutexes;
 extern vector<pthread_cond_t> room_conds;
 extern pthread_mutex_t count_mutex;
 extern sem_t cleaning;
-extern int Count;
-
-void print_rooms()
-{
-    for (auto &room : rooms)
-    {
-        cout << "Room " << room.room_id << ": ";
-        cout << "Guest " << room.guest_id << " ";
-        cout << "Guest Count " << room.guest_count << " ";
-        cout << "Stay Time " << room.stay_time.first << " " << room.stay_time.second << endl;
-    }
-}
+extern int stay_count;
 
 void *guest(void *arg)
 {
@@ -33,14 +22,8 @@ void *guest(void *arg)
             {
                 int x;
                 sem_getvalue(&room_sems[room.room_id - 1], &x);
-                cout << guest_id << "Trying to enter room " << room.room_id << ' ' << x << endl;
                 if (sem_trywait(&room_sems[room.room_id - 1]) < 0)
                     continue;
-                // if (errno == EAGAIN)
-                // {
-                //     continue;
-                // }
-                print_rooms();
                 room_id = room.room_id;
                 break;
             }
@@ -65,19 +48,17 @@ void *guest(void *arg)
         }
 
         pthread_mutex_lock(&room_mutexes[room_id - 1]);
-        cout << "Guest " << guest_id << " enters room " << room_id << endl;
-        cout << "count: " << Count << endl;
+        printf("Guest %d enters room %d\n", guest_id, room_id);
+        fflush(stdout);
         pthread_mutex_lock(&count_mutex);
-        Count++;
-        cout << "count: " << Count << endl;
-        if (Count == 2 * N)
+        stay_count++;
+        if (stay_count == 2 * N)
         {
-            cout << "Signal Cleaning" << endl;
             for (int i = 0; i < N; i++)
             {
                 sem_post(&cleaning);
             }
-            Count = 0;
+            stay_count = 0;
         }
         pthread_mutex_unlock(&count_mutex);
         rooms[room_id - 1].guest_id = guest_id;
@@ -91,20 +72,17 @@ void *guest(void *arg)
         {
             rooms[room_id - 1].stay_time.second = stay_time;
         }
-        // print_rooms();
 
         // use cond variable to wait for sleep_time or come out if other thread signals
         struct timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         ts.tv_sec += stay_time;
         pthread_cond_timedwait(&room_conds[room_id - 1], &room_mutexes[room_id - 1], &ts);
-        cout << "Guest " << guest_id << " leaves room " << room_id << endl;
         rooms[room_id - 1].guest_id = -1;
-        // print_rooms();
+        printf("Guest %d leaves room %d\n", guest_id, room_id);
+        fflush(stdout);
         pthread_mutex_unlock(&room_mutexes[room_id - 1]);
         sem_post(&room_sems[room_id - 1]);
-        int x;
-        sem_getvalue(&room_sems[room_id - 1], &x);
-        cout << "Guest " << guest_id << " left room " << room_id << "sem_value: " << x << endl;
     }
+    return NULL;
 }

@@ -22,48 +22,52 @@ vector<pthread_mutex_t> room_mutexes;
 vector<pthread_cond_t> room_conds;
 pthread_mutex_t count_mutex;
 sem_t cleaning;
-int Count = 0;
+int stay_count = 0;
 
 int main()
-{   
-    cout << "Enter number of rooms: "; cin >> N;
-    cout << "Enter number of guests: "; cin >> Y;
-    cout << "Enter number of cleaners: "; cin >> X;
+{
+    cout << "Enter number of rooms: ";
+    cin >> N;
+    cout << "Enter number of guests: ";
+    cin >> Y;
+    cout << "Enter number of cleaners: ";
+    cin >> X;
 
-    if(Y > N && N > X && X > 1)
+    if (Y > N && N > X && X > 1)
     {
-        // initialize semaphore
+        freopen("log.txt", "w", stdout);
 
         // create rooms
-        for(int i=0; i<N; i++)
-            rooms.push_back(Room(i+1));
+        for (int i = 0; i < N; i++)
+            rooms.push_back(Room(i + 1));
 
         // randomize guest priorities woth distinct numbers from 1 to Y
-        for(int i=0; i<Y; i++)
-            priorities.push_back(i+1);
+        for (int i = 0; i < Y; i++)
+            priorities.push_back(i + 1);
 
         // random shuffle
-        auto rd = random_device {}; 
-        auto rng = default_random_engine { rd() };
+        auto rd = random_device{};
+        auto rng = default_random_engine{rd()};
         shuffle(begin(priorities), end(priorities), rng);
 
-        for(auto X: priorities)
-            cout << X << " ";
-        cout << endl;
+        // print guest priorities
+        cout << "Guest priorities..." << endl;
+        for (int i = 0; i < Y; i++)
+            cout << "Guest " << i + 1 << ": " << priorities[i] << endl;
 
         // create semaphores for rooms
         room_sems.resize(N);
-        for(int i=0; i<N; i++)
+        for (int i = 0; i < N; i++)
             sem_init(&room_sems[i], 0, 1);
 
         // create mutexes for rooms
         room_mutexes.resize(N);
-        for(int i=0; i<N; i++)
+        for (int i = 0; i < N; i++)
             pthread_mutex_init(&room_mutexes[i], NULL);
 
         // create conditions for rooms
         room_conds.resize(N);
-        for(int i=0; i<N; i++)
+        for (int i = 0; i < N; i++)
             pthread_cond_init(&room_conds[i], NULL);
 
         // create mutex for counting
@@ -72,34 +76,33 @@ int main()
         // create semaphore for cleaners
         sem_init(&cleaning, 0, 0);
 
-
         // create threads for guests and cleaners
         guest_tids.resize(Y);
-        cleaning_tids.resize(X);       
+        cleaning_tids.resize(X);
 
-        for(int i=0; i<Y; i++)
-            pthread_create(&guest_tids[i], NULL, guest, (void*)(i+1));
-        for(int i=0; i<X; i++)
-            pthread_create(&cleaning_tids[i], NULL, cleaner, (void*)(i+1));
-        
+        for (int i = 0; i < Y; i++)
+            pthread_create(&guest_tids[i], NULL, guest, (void *)((long)i + 1));
+        for (int i = 0; i < X; i++)
+            pthread_create(&cleaning_tids[i], NULL, cleaner, (void *)((long)i + 1));
+
         // wait for all threads to finish
-        for(int i=0; i<Y; i++)
+        for (int i = 0; i < Y; i++)
             pthread_join(guest_tids[i], NULL);
-        for(int i=0; i<X; i++)
+        for (int i = 0; i < X; i++)
             pthread_join(cleaning_tids[i], NULL);
 
         // destroy semaphores
-        for(int i=0; i<N; i++)
+        for (int i = 0; i < N; i++)
             sem_destroy(&room_sems[i]);
         sem_destroy(&cleaning);
 
         // destroy mutexes
-        for(int i=0; i<N; i++)
+        for (int i = 0; i < N; i++)
             pthread_mutex_destroy(&room_mutexes[i]);
         pthread_mutex_destroy(&count_mutex);
 
         // destroy conditions
-        for(int i=0; i<N; i++)
+        for (int i = 0; i < N; i++)
             pthread_cond_destroy(&room_conds[i]);
     }
     else
@@ -108,5 +111,4 @@ int main()
     }
 
     return 0;
-    
 }

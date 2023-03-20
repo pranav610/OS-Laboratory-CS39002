@@ -30,7 +30,8 @@ void *cleaner(void *arg)
         pthread_mutex_lock(&room_mutexes[room_clean]);
 
         rooms[room_clean].guest_count = 0;
-        cout << "Room " << room_clean + 1 << " is cleaned" << endl;
+        printf("Room %d is cleaned\n", room_clean + 1);
+        fflush(stdout);
 
         int sleep_time = rooms[room_clean].stay_time.first + rooms[room_clean].stay_time.second;
 
