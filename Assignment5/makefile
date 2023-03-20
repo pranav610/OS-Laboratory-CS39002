@@ -1,11 +1,14 @@
-main: main.cpp guest.o cleaner.o data_structures.hpp 
-	g++ -o main main.cpp guest.o cleaner.o -lpthread -lrt
+main: main.cpp guest.o cleaner.o data_structures.o data_structures.hpp 
+	g++ -o main main.cpp guest.o cleaner.o data_structures.o -lpthread -lrt
 
-guest.o: guest.cpp guest.hpp data_structures.hpp
+guest.o: guest.cpp threads.hpp data_structures.o
 	g++ -c guest.cpp -lpthread -lrt
 
-cleaner.o: cleaner.cpp cleaner.hpp data_structures.hpp
+cleaner.o: cleaner.cpp threads.hpp data_structures.o
 	g++ -c cleaner.cpp -lpthread -lrt
+
+data_structures.o: data_structures.hpp
+	g++ -c data_structures.cpp -lpthread -lrt
 
 clean:
 	rm *.o main

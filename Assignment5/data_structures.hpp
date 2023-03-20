@@ -2,6 +2,9 @@
 #define DATA_STRUCTURES_HPP
 
 #include <stdlib.h>
+#include <utility>
+
+using namespace std;
 
 #define SLEEP_MIN 10
 #define SLEEP_MAX 20

@@ -17,7 +17,11 @@ vector<pthread_t> guest_tids;
 vector<pthread_t> cleaning_tids;
 vector<Room> rooms;
 vector<int> priorities;
-sem_t sem;
+vector<sem_t> room_sems;
+vector<pthread_mutex_t> room_mutexes;
+vector<pthread_cond_t> room_conds;
+pthread_mutex_t count_mutex;
+sem_t cleaning;
 
 int main()
 {   
@@ -28,7 +32,6 @@ int main()
     if(Y > N && N > X && X > 1)
     {
         // initialize semaphore
-        sem_init(&sem, 0, N);
 
         // create rooms
         for(int i=0; i<N; i++)
@@ -43,9 +46,35 @@ int main()
         auto rng = default_random_engine { rd() };
         shuffle(begin(priorities), end(priorities), rng);
 
+        for(auto X: priorities)
+            cout << X << " ";
+        cout << endl;
+
+        // create semaphores for rooms
+        room_sems.resize(N);
+        for(int i=0; i<N; i++)
+            sem_init(&room_sems[i], 0, 1);
+
+        // create mutexes for rooms
+        room_mutexes.resize(N);
+        for(int i=0; i<N; i++)
+            pthread_mutex_init(&room_mutexes[i], NULL);
+
+        // create conditions for rooms
+        room_conds.resize(N);
+        for(int i=0; i<N; i++)
+            pthread_cond_init(&room_conds[i], NULL);
+
+        // create mutex for counting
+        pthread_mutex_init(&count_mutex, NULL);
+
+        // create semaphore for cleaners
+        sem_init(&cleaning, 0, 0);
+
+
         // create threads for guests and cleaners
         guest_tids.resize(Y);
-        cleaning_tids.resize(X);             
+        cleaning_tids.resize(X);       
 
         for(int i=0; i<Y; i++)
             pthread_create(&guest_tids[i], NULL, guest, (void*)(i+1));
@@ -58,8 +87,19 @@ int main()
         for(int i=0; i<X; i++)
             pthread_join(cleaning_tids[i], NULL);
 
-        // destroy semaphore
-        sem_destroy(&sem);
+        // destroy semaphores
+        for(int i=0; i<N; i++)
+            sem_destroy(&room_sems[i]);
+        sem_destroy(&cleaning);
+
+        // destroy mutexes
+        for(int i=0; i<N; i++)
+            pthread_mutex_destroy(&room_mutexes[i]);
+        pthread_mutex_destroy(&count_mutex);
+
+        // destroy conditions
+        for(int i=0; i<N; i++)
+            pthread_cond_destroy(&room_conds[i]);
     }
     else
     {
