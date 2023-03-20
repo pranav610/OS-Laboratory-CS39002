@@ -6,7 +6,13 @@
 #ifndef THREADS_HPP
 #define THREADS_HPP
 
+#include <random>
+#include <unistd.h>
+#include <semaphore.h>
+#include "data_structures.hpp"
+
 using namespace std;
+
 void *guest(void *arg);
 void *cleaner(void *arg);
 

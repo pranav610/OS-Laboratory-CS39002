@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <random>
+#include <semaphore.h>
 
 #include "threads.hpp"
 #include "data_structures.hpp"
@@ -15,7 +16,8 @@ int X, Y, N;
 vector<pthread_t> guest_tids;
 vector<pthread_t> cleaning_tids;
 vector<Room> rooms;
-vector<Guest> guests;
+vector<int> priorities;
+sem_t sem;
 
 int main()
 {   
@@ -24,31 +26,22 @@ int main()
     cout << "Enter number of cleaners: "; cin >> X;
 
     if(Y > N && N > X && X > 1)
-    {   
+    {
+        // initialize semaphore
+        sem_init(&sem, 0, N);
+
         // create rooms
         for(int i=0; i<N; i++)
             rooms.push_back(Room(i+1));
 
-        // create guests
-        for(int i=0; i<Y; i++)
-            guests.push_back(Guest(i+1));
-
         // randomize guest priorities woth distinct numbers from 1 to Y
-        vector<int> priorities(Y);
         for(int i=0; i<Y; i++)
-            priorities[i] = i+1;
+            priorities.push_back(i+1);
 
         // random shuffle
         auto rd = random_device {}; 
         auto rng = default_random_engine { rd() };
         shuffle(begin(priorities), end(priorities), rng);
-
-        // assign priorities to guests
-        for(int i=0; i<Y; i++)
-            guests[i].priority = priorities[i];
-
-        // clear priorities vector
-        priorities.clear();
 
         // create threads for guests and cleaners
         guest_tids.resize(Y);
@@ -64,6 +57,9 @@ int main()
             pthread_join(guest_tids[i], NULL);
         for(int i=0; i<X; i++)
             pthread_join(cleaning_tids[i], NULL);
+
+        // destroy semaphore
+        sem_destroy(&sem);
     }
     else
     {

@@ -9,24 +9,13 @@
 #define STAY_MAX 30
 
 class Room
-{   
-    public:
-        int room_id;
-        int guest_id;
-        int guest_count;
-        int last_stay;
-        Room(int);
-};
-
-class Guest
 {
-    public:
-        int guest_id;
-        int room_id;
-        int stay_time;
-        int priority;
-        Guest(int);
+public:
+    int room_id;
+    int guest_id;
+    int guest_count;
+    pair<int, int> stay_time;
+    Room(int);
 };
 
 #endif
-
