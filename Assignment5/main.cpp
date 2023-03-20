@@ -30,7 +30,7 @@ int main()
     else
     {
         cout << "Invalid input" << endl;
-        return 0;
     }
-    
+
+    return 0;
 }
