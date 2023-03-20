@@ -22,6 +22,7 @@ vector<pthread_mutex_t> room_mutexes;
 vector<pthread_cond_t> room_conds;
 pthread_mutex_t count_mutex;
 sem_t cleaning;
+int Count = 0;
 
 int main()
 {   

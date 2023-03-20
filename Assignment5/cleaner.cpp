@@ -12,7 +12,7 @@ void *cleaner(void *arg)
     while (1)
     {
         sem_wait(&cleaning);
-        int room_clean =-1;
+        int room_clean = -1;
         while (1)
         {
             vector<int> dirty_rooms;
@@ -25,18 +25,18 @@ void *cleaner(void *arg)
             if (sem_trywait(&room_sems[room_clean]) != -1)
                 break;
         }
-        
+
         pthread_cond_signal(&room_conds[room_clean]);
         pthread_mutex_lock(&room_mutexes[room_clean]);
 
         rooms[room_clean].guest_count = 0;
-        cout<<"Room "<<room_clean+1<<" is cleaned"<<endl;
+        cout << "Room " << room_clean + 1 << " is cleaned" << endl;
 
-        int sleep_time = rooms[room_clean].stay_time.first+rooms[room_clean].stay_time.second;
+        int sleep_time = rooms[room_clean].stay_time.first + rooms[room_clean].stay_time.second;
 
         sleep(sleep_time);
 
-        rooms[room_clean].stay_time = make_pair(0,0);
+        rooms[room_clean].stay_time = make_pair(0, 0);
 
         pthread_mutex_unlock(&room_mutexes[room_clean]);
         sem_post(&room_sems[room_clean]);
