@@ -20,7 +20,7 @@ vector<int> priorities;
 vector<sem_t> room_sems;
 vector<pthread_mutex_t> room_mutexes;
 vector<pthread_cond_t> room_conds;
-pthread_mutex_t count_mutex;
+sem_t stay_count_sem;
 sem_t cleaning;
 int stay_count = 0;
 
@@ -70,8 +70,8 @@ int main()
         for (int i = 0; i < N; i++)
             pthread_cond_init(&room_conds[i], NULL);
 
-        // create mutex for counting
-        pthread_mutex_init(&count_mutex, NULL);
+        // create semaphore for stay count
+        sem_init(&stay_count_sem, 0, 1);
 
         // create semaphore for cleaners
         sem_init(&cleaning, 0, 0);
@@ -95,11 +95,11 @@ int main()
         for (int i = 0; i < N; i++)
             sem_destroy(&room_sems[i]);
         sem_destroy(&cleaning);
+        sem_destroy(&stay_count_sem);
 
         // destroy mutexes
         for (int i = 0; i < N; i++)
             pthread_mutex_destroy(&room_mutexes[i]);
-        pthread_mutex_destroy(&count_mutex);
 
         // destroy conditions
         for (int i = 0; i < N; i++)

@@ -6,7 +6,7 @@ extern vector<int> priorities;
 extern vector<sem_t> room_sems;
 extern vector<pthread_mutex_t> room_mutexes;
 extern vector<pthread_cond_t> room_conds;
-extern pthread_mutex_t count_mutex;
+extern sem_t stay_count_sem;
 extern sem_t cleaning;
 extern int stay_count;
 
@@ -50,7 +50,7 @@ void *guest(void *arg)
         pthread_mutex_lock(&room_mutexes[room_id - 1]);
         printf("Guest %d enters room %d\n", guest_id, room_id);
         fflush(stdout);
-        pthread_mutex_lock(&count_mutex);
+        sem_wait(&stay_count_sem);
         stay_count++;
         if (stay_count == 2 * N)
         {
@@ -60,7 +60,7 @@ void *guest(void *arg)
             }
             stay_count = 0;
         }
-        pthread_mutex_unlock(&count_mutex);
+        sem_post(&stay_count_sem);
         rooms[room_id - 1].guest_id = guest_id;
         rooms[room_id - 1].guest_count++;
         int stay_time = rand() % (STAY_MAX - STAY_MIN + 1) + STAY_MIN;
