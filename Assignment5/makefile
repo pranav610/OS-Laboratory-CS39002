@@ -14,4 +14,4 @@ claen:
 	rm *.o
 
 distclean:
-	rm *.o main
+	rm *.o main log.txt

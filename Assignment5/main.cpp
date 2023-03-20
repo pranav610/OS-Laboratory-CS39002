@@ -54,6 +54,7 @@ int main()
         cout << "Guest priorities..." << endl;
         for (int i = 0; i < Y; i++)
             cout << "Guest " << i + 1 << ": " << priorities[i] << endl;
+        cout << endl;
 
         // create semaphores for rooms
         room_sems.resize(N);
