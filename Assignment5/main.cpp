@@ -18,10 +18,10 @@ vector<pthread_t> cleaning_tids;
 vector<Room> rooms;
 vector<int> priorities;
 vector<sem_t> room_sems;
-vector<pthread_mutex_t> room_mutexes;
-vector<pthread_cond_t> room_conds;
+vector<sem_t> bin_room_sems;
 sem_t stay_count_sem;
 sem_t cleaning;
+sem_t clean_start, clean_end;
 int stay_count = 0;
 
 int main()
@@ -61,21 +61,18 @@ int main()
         for (int i = 0; i < N; i++)
             sem_init(&room_sems[i], 0, 1);
 
-        // create mutexes for rooms
-        room_mutexes.resize(N);
+        // create binary semaphores for rooms
+        bin_room_sems.resize(N);
         for (int i = 0; i < N; i++)
-            pthread_mutex_init(&room_mutexes[i], NULL);
-
-        // create conditions for rooms
-        room_conds.resize(N);
-        for (int i = 0; i < N; i++)
-            pthread_cond_init(&room_conds[i], NULL);
+            sem_init(&bin_room_sems[i], 0, 0);
 
         // create semaphore for stay count
         sem_init(&stay_count_sem, 0, 1);
 
         // create semaphore for cleaners
         sem_init(&cleaning, 0, 0);
+        sem_init(&clean_start, 0, 0);
+        sem_init(&clean_end, 0, 0);
 
         // create threads for guests and cleaners
         guest_tids.resize(Y);
@@ -97,15 +94,13 @@ int main()
             sem_destroy(&room_sems[i]);
         sem_destroy(&cleaning);
         sem_destroy(&stay_count_sem);
-
-        // destroy mutexes
-        for (int i = 0; i < N; i++)
-            pthread_mutex_destroy(&room_mutexes[i]);
-
-        // destroy conditions
-        for (int i = 0; i < N; i++)
-            pthread_cond_destroy(&room_conds[i]);
+        sem_destroy(&clean_start);
+        sem_destroy(&clean_end);
         
+        // destroy binary semaphores
+        for(int i = 0; i < N; i++)
+            sem_destroy(&bin_room_sems[i]);
+
         fclose(fp);
     }
     else
