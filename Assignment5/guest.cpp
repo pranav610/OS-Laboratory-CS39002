@@ -3,8 +3,8 @@
 extern int X, Y, N;
 extern vector<Room> rooms;
 extern vector<int> priorities;
-extern vector<sem_t> room_sems;
 extern vector<sem_t> bin_room_sems;
+extern vector<sem_t> sig_room_sems;
 extern sem_t stay_count_sem;
 extern sem_t cleaning;
 extern sem_t clean_start;
@@ -22,7 +22,7 @@ void *guest(void *arg)
         {
             if (room.guest_id == -1 && room.guest_count < 2)
             {
-                if (sem_trywait(&room_sems[room.room_id - 1]) < 0)
+                if (sem_trywait(&bin_room_sems[room.room_id - 1]) < 0)
                     continue;
 
                 room_id = room.room_id;
@@ -35,17 +35,17 @@ void *guest(void *arg)
             {
                 if (room.guest_id != -1 && priorities[guest_id - 1] > priorities[room.guest_id - 1] && room.guest_count < 2)
                 {
-                    sem_post(&bin_room_sems[room.room_id - 1]);
+                    sem_post(&sig_room_sems[room.room_id - 1]);
                     int x;
                     
                     while (1)
                     {
-                        sem_getvalue(&room_sems[room.room_id - 1], &x);
+                        sem_getvalue(&bin_room_sems[room.room_id - 1], &x);
                         if (x == 1)
                             break;
                     }
 
-                    if (sem_trywait(&room_sems[room.room_id - 1]) < 0)
+                    if (sem_trywait(&bin_room_sems[room.room_id - 1]) < 0)
                         continue;
 
                     room_id = room.room_id;
@@ -86,14 +86,14 @@ void *guest(void *arg)
         struct timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         ts.tv_sec += stay_time;
-        sem_timedwait(&bin_room_sems[room_id - 1], &ts);
+        sem_timedwait(&sig_room_sems[room_id - 1], &ts);
 
         rooms[room_id - 1].guest_id = -1;
 
         printf("Guest %d leaves room %d\n", guest_id, room_id);
         fflush(stdout);
 
-        sem_post(&room_sems[room_id - 1]);
+        sem_post(&bin_room_sems[room_id - 1]);
     }
     return NULL;
 }

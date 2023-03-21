@@ -17,8 +17,8 @@ vector<pthread_t> guest_tids;
 vector<pthread_t> cleaning_tids;
 vector<Room> rooms;
 vector<int> priorities;
-vector<sem_t> room_sems;
 vector<sem_t> bin_room_sems;
+vector<sem_t> sig_room_sems;
 sem_t stay_count_sem;
 sem_t cleaning;
 sem_t clean_start, clean_end;
@@ -57,14 +57,14 @@ int main()
         cout << endl;
 
         // create semaphores for rooms
-        room_sems.resize(N);
-        for (int i = 0; i < N; i++)
-            sem_init(&room_sems[i], 0, 1);
-
-        // create binary semaphores for rooms
         bin_room_sems.resize(N);
         for (int i = 0; i < N; i++)
-            sem_init(&bin_room_sems[i], 0, 0);
+            sem_init(&bin_room_sems[i], 0, 1);
+
+        // create binary semaphores for rooms
+        sig_room_sems.resize(N);
+        for (int i = 0; i < N; i++)
+            sem_init(&sig_room_sems[i], 0, 0);
 
         // create semaphore for stay count
         sem_init(&stay_count_sem, 0, 1);
@@ -91,15 +91,13 @@ int main()
 
         // destroy semaphores
         for (int i = 0; i < N; i++)
-            sem_destroy(&room_sems[i]);
+            sem_destroy(&bin_room_sems[i]);
         sem_destroy(&cleaning);
         sem_destroy(&stay_count_sem);
         sem_destroy(&clean_start);
         sem_destroy(&clean_end);
-        
-        // destroy binary semaphores
         for(int i = 0; i < N; i++)
-            sem_destroy(&bin_room_sems[i]);
+            sem_destroy(&sig_room_sems[i]);
 
         fclose(fp);
     }

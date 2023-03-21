@@ -5,8 +5,8 @@ extern vector<Room> rooms;
 extern sem_t cleaning;
 extern sem_t clean_start;
 extern sem_t clean_end;
-extern vector<sem_t> room_sems;
 extern vector<sem_t> bin_room_sems;
+extern vector<sem_t> sig_room_sems;
 
 void *cleaner(void *arg)
 {
@@ -16,7 +16,7 @@ void *cleaner(void *arg)
         int room_clean = -1;
         if (sem_trywait(&clean_start) != -1)
             for (int i = 0; i < N; i++)
-                sem_post(&bin_room_sems[i]);
+                sem_post(&sig_room_sems[i]);
 
         while (1)
         {
@@ -28,9 +28,9 @@ void *cleaner(void *arg)
             room_clean = dirty_rooms[rand() % dirty_rooms.size()];
 
             int x;
-            sem_getvalue(&room_sems[room_clean], &x);
+            sem_getvalue(&bin_room_sems[room_clean], &x);
             if (x == 1)
-                if (sem_trywait(&room_sems[room_clean]) != -1)
+                if (sem_trywait(&bin_room_sems[room_clean]) != -1)
                     break;
         }
         
@@ -55,6 +55,6 @@ void *cleaner(void *arg)
         if (all_clean)
             if (sem_trywait(&clean_end) != -1)
                 for (int i = 0; i < N; i++)
-                    sem_post(&room_sems[i]);
+                    sem_post(&bin_room_sems[i]);
     }
 }
