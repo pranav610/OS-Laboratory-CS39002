@@ -35,7 +35,7 @@ int main()
 
     if (Y > N && N > X && X > 1)
     {
-        freopen("log.txt", "w", stdout);
+        FILE* fp = freopen("log.txt", "w", stdout);
 
         // create rooms
         for (int i = 0; i < N; i++)
@@ -105,6 +105,8 @@ int main()
         // destroy conditions
         for (int i = 0; i < N; i++)
             pthread_cond_destroy(&room_conds[i]);
+        
+        fclose(fp);
     }
     else
     {
