@@ -14,10 +14,7 @@ Data Structures USed:
     ->int guest_id : unique id for each guest who is in the room
     ->int guest_count : to keep track of number of guest who have already used the room so after 2 guest  
                         we need to activate cleaner to clean the room                     
-    -> pair<int,int> stay_time : to keep track of the total time for which atleast last 2 guest stayed in  
-                                 the room so that cleaner thread spents the time proportional to the total stay_time for cleaning the room. 
-                                 stay_time.first = start time for a guest ,when room is allocated to a guest
-                                 stay_time.second = end time for a guest when he/she leaves the room or when he is voluntarily evicted from the room
+    -> pair<int,int> stay_time : stay_time.first stored the stay duration for the first guest who has entered the room after it has been cleaned or during the start of the program and stay_time.second stores the stay duration for the second guest who has entered the room after the first guest has left the room.
 
 Priority Heuristic:
     We are randomly alloting unique priority to each guest between 1 to Y(Number of guests).
@@ -28,7 +25,7 @@ Semaphores Used:
     Used Semaphores:
         ->bin_room_sems[N] : To lock the rooms so that only one guest can access the room at a time
         ->sig_room_sems[N] : Used for blocking the room when used by some guest and free it when guest leaves the room or a higher priority guest has to be allocated the room
-        ->cleaning : To lock the cleaner thread so that all the rooms are cleaned and no guest is in the room when cleaner thread is cleaning the room 
+        ->cleaning : To block guest threads and facilitate the functioning of cleaner threads till all rooms are cleaned
         ->stay_count_sem : Binary semaphore to lock stay_count varible while incrementing by one guest thread.
         ->clean_start : To indicate that cleaner threads has started cleaning the room and no guest can enter the room
         ->clean_end : To indicate that cleaner threads has finished cleaning the room and guest can enter the room
