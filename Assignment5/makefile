@@ -10,7 +10,7 @@ cleaner.o: cleaner.cpp threads.hpp data_structures.o
 data_structures.o: data_structures.hpp
 	g++ -Wall -c data_structures.cpp -lpthread -lrt
 
-claen:
+clean:
 	rm *.o
 
 distclean:
