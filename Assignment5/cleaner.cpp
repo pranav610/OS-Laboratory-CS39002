@@ -16,7 +16,8 @@ void *cleaner(void *arg)
         int room_clean = -1;
         if (sem_trywait(&clean_start) != -1)
             for (int i = 0; i < N; i++)
-                sem_post(&sig_room_sems[i]);
+                if(rooms[i].guest_id != -1)
+                    sem_post(&sig_room_sems[i]);
 
         while (1)
         {
