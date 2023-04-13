@@ -122,9 +122,19 @@ ssize_t freeList(string name="")
     }
     else
     {
-        if(MEM.scope_stack.top().find(name) == MEM.scope_stack.top().end())
-            return -1;
-        auto it = MEM.scope_stack.top()[name];
-        MEM.blocks.erase(it);
+        // free the entry which occurs first in the scope stack with name as key
+        stack<map<string, set<mem_block>::iterator>> temp = MEM.scope_stack;
+        while(!temp.empty())
+        {
+            if(temp.top().find(name) != temp.top().end())
+            {
+                MEM.blocks.erase(temp.top()[name]);
+                return 0;
+            }
+            temp.pop();
+        }
+        // if not found in any scope
+        printf("Error: variable not found\n");
+        exit(EXIT_FAILURE);
     }
 }
