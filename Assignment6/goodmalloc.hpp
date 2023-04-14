@@ -2,6 +2,9 @@
 #define GOODMALLOC_HPP
 
 #include<bits/stdc++.h>
+#include <sys/resource.h>
+#include <sys/time.h>
+
 using namespace std;
 
 const long MAXMEM = 100000000;
@@ -29,7 +32,7 @@ class Memory{
     long mem_size;
     set<mem_block> blocks;
     stack<map<string, set<mem_block>::iterator>> scope_stack;
-    
+
     Memory()
     {
         mem_start = NULL;
@@ -97,10 +100,10 @@ class List{
         tail = NULL;
     }
     void insert(int val){
-        
+
     }
     void remove(int val){
-        
+
     }
 
 };
