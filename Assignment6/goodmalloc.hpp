@@ -10,6 +10,7 @@ void createMem(uint32_t);
 
 uint64_t createList(string, uint32_t);
 ssize_t assignVal(string, int64_t, int);
+ssize_t getVal(string, int64_t, int*);
 ssize_t freeList(string);
 
 typedef struct _mem_block{
