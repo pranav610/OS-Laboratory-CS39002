@@ -176,3 +176,14 @@ ssize_t freeList(string name="")
         exit(EXIT_FAILURE);
     }
 }
+
+int memory_usage()
+{
+    int usage = 0;
+    for (const auto &block : MEM.blocks)
+    {
+        usage += block.limit;
+    }
+    cout << "Memory usage: " << usage << " bytes" << endl;
+    return usage;
+}

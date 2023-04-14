@@ -1,8 +1,11 @@
 #include "goodmalloc.hpp"
+#include<sys/time.h>
+#include<sys/resource.h>
 
 #define MAX_ARRAY_SIZE 50000
 
 int calls = 0;
+int memory_footprint = 0;
 
 void MERGESORT(string s, int l, int r)
 {
@@ -55,6 +58,7 @@ void MERGESORT(string s, int l, int r)
     }
     freeList(temp);
     endScope();
+    memory_footprint = max(memory_footprint, memory_usage());
 }
 
 int main()
@@ -125,6 +129,9 @@ int main()
     printf("\nWith FreeElem()\n");
     // printf("Total memory footprint %ld \n", usage.ru_maxrss);
     printf("Total runtime %lf ms\n", seconds);
+    // printf("\nWith FreeElem()\n");
+    cout << "Total memory footprint " << memory_footprint << endl;
+    // cout << "Total runtime " << seconds << " seconds" << endl;
 
     return 0;
 }

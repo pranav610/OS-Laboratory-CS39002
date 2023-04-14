@@ -2,8 +2,6 @@
 #define GOODMALLOC_HPP
 
 #include<bits/stdc++.h>
-#include <sys/resource.h>
-#include <sys/time.h>
 
 using namespace std;
 
@@ -36,7 +34,7 @@ class Memory{
 
     Memory()
     {
-        mem_start = NULL;
+        mem_start = 0;
         mem_size = 0;
         blocks.clear();
     }
@@ -64,57 +62,6 @@ class ListElement {
 
 void startScope();
 void endScope();
-/*
-
-class Node{
-    int val;
-    Node* next;
-    Node* prev;
-    public:
-    Node(int val){
-        this->val = val;
-        next = NULL;
-        prev = NULL;
-    }
-    int getVal() const {
-        return val;
-    }
-    Node* getNext() const {
-        return next;
-    }
-    Node* getPrev() const {
-        return prev;
-    }
-    void setNext(Node* next){
-        this->next = next;
-    }
-    void setPrev(Node* prev){
-        this->prev = prev;
-    }
-};
-
-class List{
-    Node* head , *tail;
-    public:
-    List(){
-        head = NULL;
-        tail = NULL;
-    }
-    void insert(int val){
-
-    }
-    void remove(int val){
-
-    }
-
-};
-
-char* createMem(){
-    char* mem = new char[MAXMEM];
-    return mem;
-}
-
-int createList()
-*/
+int memory_usage();
 
 #endif
