@@ -1,6 +1,5 @@
 #include "goodmalloc.hpp"
 
-
 #define MAX_ARRAY_SIZE 50000
 
 void MERGESORT(string s,string l,string r)
@@ -15,18 +14,18 @@ void MERGESORT(string s,string l,string r)
     MERGESORT(s,m,r);
 
     string temp="temp";
-    struct ListElement *list = (struct ListElement *)createList(temp, getVal(r,0)-getVal(l,0)+1);
+    createList(temp, getVal(r,0)-getVal(l,0)+1);
 
     string i="i";
-    struct ListElement *list = (struct ListElement *)createList(i, 1);
+    createList(i, 1);
     assignVal(i, 0, getVal(l,0));
 
     string j="j";
-    struct ListElement *list = (struct ListElement *)createList(j, 1);
+    createList(j, 1);
     assignVal(j, 0, getVal(m,0)+1);
 
     string k="k";
-    struct ListElement *list = (struct ListElement *)createList(k, 1);
+    createList(k, 1);
     assignVal(k, 0, 0);
 
     while(getVal(i,0) < getVal(m,0)+1 && getVal(j,0) < getVal(r,0)+1)
@@ -79,7 +78,7 @@ int main()
 
     string s = "mergesort";
 
-    struct ListElement *list = (struct ListElement *)createList(s, MAX_ARRAY_SIZE);
+    createList(s, MAX_ARRAY_SIZE);
 
     // assign random values to the list
 
@@ -88,7 +87,7 @@ int main()
     uniform_int_distribution<> dis(0, 1000000);
 
     string i = "i";
-    struct ListElement *list = (struct ListElement *)createList(i, 1);
+    createList(i, 1);
     assignVal(i, 0, 0);
 
     while(getVal(i, 0) < MAX_ARRAY_SIZE){
@@ -109,8 +108,8 @@ int main()
 
     string l="l";
     string r="r";
-    struct ListElement *list = (struct ListElement *)createList(l, 1);
-    struct ListElement *list = (struct ListElement *)createList(r, 1);
+    createList(l, 1);
+    createList(r, 1);
     assignVal(l, 0, 0);
     assignVal(r, 0, MAX_ARRAY_SIZE - 1);
 
