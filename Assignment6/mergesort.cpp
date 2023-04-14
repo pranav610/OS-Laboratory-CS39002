@@ -53,6 +53,7 @@ void MERGESORT(string s, int l, int r)
         assignVal(s, l+j, getVal(temp, j));
         j++;
     }
+    freeList(temp);
     endScope();
 }
 
@@ -110,7 +111,7 @@ int main()
     //     printf("%d ", getVal(s, getVal(i, 0)));
     //     assignVal(i, 0, getVal(i, 0) + 1);
     // }
-
+    freeList(s);
     endScope();
 
     // end the timer

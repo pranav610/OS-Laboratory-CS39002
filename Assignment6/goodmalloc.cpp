@@ -111,11 +111,11 @@ void startScope()
 void endScope()
 {   
     map<string, set<mem_block>::iterator> scope = MEM.scope_stack.top();
-    // for(auto it=scope.begin(); it!=scope.end(); it++)
-    // {
-    //     MEM.blocks.erase(it->second);
-    //     MEM.blocks.insert({it->second->base, it->second->limit, it->second->name, false});
-    // }
+    for(auto it=scope.begin(); it!=scope.end(); it++)
+    {
+        MEM.blocks.erase(it->second);
+        MEM.blocks.insert({it->second->base, it->second->limit, it->second->name, false});
+    }
     MEM.scope_stack.pop();
 }
 
