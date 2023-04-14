@@ -1,6 +1,6 @@
 #include "goodmalloc.hpp"
 
-#define MAX_ARRAY_SIZE 5000
+#define MAX_ARRAY_SIZE 50
 
 int calls = 0;
 
@@ -9,7 +9,7 @@ void MERGESORT(string s, int l, int r)
     // cout << "Args: " << s << " " << l << " " << r << endl;
     startScope();
     // printf("Call %d: l=%d r=%d\n",calls++,getVal(l,0),getVal(r,0));
-    if(l>r){endScope();return;}
+    if(l>=r){endScope();return;}
 
     int m = (l+r)/2;
     MERGESORT(s,l,m);
@@ -67,7 +67,7 @@ int main()
     start = usage.ru_utime;
 
     // create memory of size 250 MB
-    createMem(250e6);
+    createMem(25e6);
     startScope();
 
     // create a doubly linked list of size 50000 elements
@@ -97,9 +97,9 @@ int main()
     // call mergesort
 
     int l = 0, r = MAX_ARRAY_SIZE - 1;
-
+    
     MERGESORT(s, l , r);
-
+    
     // print the sorted list
     // printf("\nThe sorted list is\n");
     // assignVal(i, 0, 0);
