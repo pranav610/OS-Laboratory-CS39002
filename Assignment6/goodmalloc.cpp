@@ -42,10 +42,10 @@ ssize_t assignVal(string name, int64_t idx, int val)
     return -1;
 }
 
-ssize_t getVal(string name, int64_t idx, int *val)
+int getVal(string name, int64_t idx)
 {
     if(idx<-1)
-        return -1;
+        return INT_MIN;
 
     stack<map<string, set<mem_block>::iterator>> temp = MEM.scope_stack;
     while(!temp.empty())
@@ -54,20 +54,19 @@ ssize_t getVal(string name, int64_t idx, int *val)
         {   
             // check if index is out of bounds
             if(idx*sizeof(ListElement) >= temp.top()[name]->limit)
-                return -1;
+                return INT_MIN;
             // loop through the list and assign the value
             ListElement *curr = (ListElement*)(temp.top()[name]->base);
             for(int i=0; i<idx; i++)
                 curr = curr->next;
-            *val = curr->val;
-            return 0;
+            return curr->val;
         }
         
         temp.pop();
     }
     // if not found in any scope
     printf("Error: variable not found\n");
-    return -1;
+    return INT_MIN;
 }
 
 
