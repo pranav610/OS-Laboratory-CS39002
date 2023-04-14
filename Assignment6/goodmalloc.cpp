@@ -19,23 +19,31 @@ ssize_t assignVal(string name, int64_t idx, int val)
     if(idx < 0)
         return -1;
 
-    stack<map<string, set<mem_block>::iterator>> temp = MEM.scope_stack;
-    while(!temp.empty())
-    {
-        if(temp.top().find(name) != temp.top().end())
-        {   
-            // check if index is out of bounds
-            if(idx*sizeof(ListElement) >= temp.top()[name]->limit)
-                return -1;
-            // loop through the list and assign the value
-            ListElement *curr = (ListElement*)(temp.top()[name]->base);
-            for(int i=0; i<idx; i++)
-                curr = curr->next;
-            curr->val = val;
-            return 0;
-        }
-        
-        temp.pop();
+    // check if name present in current scope
+    if(MEM.scope_stack.top().find(name) != MEM.scope_stack.top().end())
+    {   
+        // check if index is out of bounds
+        if(idx*sizeof(ListElement) >= MEM.scope_stack.top()[name]->limit)
+            return -1;
+        // loop through the list and assign the value
+        ListElement *curr = (ListElement*)(MEM.scope_stack.top()[name]->base + idx*sizeof(ListElement));
+        // for(int i=0; i<idx; i++)
+        //     curr = curr->next;
+        curr->val = val;
+        return 0;
+    }
+    // check if name present in global scope
+    if(MEM.global_scope.find(name) != MEM.global_scope.end())
+    {   
+        // check if index is out of bounds
+        if(idx*sizeof(ListElement) >= MEM.global_scope[name]->limit)
+            return -1;
+        // loop through the list and assign the value
+        ListElement *curr = (ListElement*)(MEM.global_scope[name]->base + idx*sizeof(ListElement));
+        // for(int i=0; i<idx; i++)
+        //     curr = curr->next;
+        curr->val = val;
+        return 0;
     }
     // if not found in any scope
     printf("Error: variable not found\n");
@@ -47,28 +55,34 @@ int getVal(string name, int64_t idx)
     if(idx<-1)
         return INT_MIN;
 
-    stack<map<string, set<mem_block>::iterator>> temp = MEM.scope_stack;
-    while(!temp.empty())
-    {
-        if(temp.top().find(name) != temp.top().end())
-        {   
-            // check if index is out of bounds
-            if(idx*sizeof(ListElement) >= temp.top()[name]->limit)
-                return INT_MIN;
-            // loop through the list and assign the value
-            ListElement *curr = (ListElement*)(temp.top()[name]->base);
-            for(int i=0; i<idx; i++)
-                curr = curr->next;
-            return curr->val;
-        }
-        
-        temp.pop();
+    // check if name present in current scope 
+    if(MEM.scope_stack.top().find(name) != MEM.scope_stack.top().end())
+    {   
+        // check if index is out of bounds
+        if(idx*sizeof(ListElement) >= MEM.scope_stack.top()[name]->limit)
+            return INT_MIN;
+        // loop through the list and assign the value
+        ListElement *curr = (ListElement*)(MEM.scope_stack.top()[name]->base + idx*sizeof(ListElement));
+        // for(int i=0; i<idx; i++)
+        //     curr = curr->next;
+        return curr->val;
+    }
+    // check if name present in global scope
+    if(MEM.global_scope.find(name) != MEM.global_scope.end())
+    {   
+        // check if index is out of bounds
+        if(idx*sizeof(ListElement) >= MEM.global_scope[name]->limit)
+            return INT_MIN;
+        // loop through the list and assign the value
+        ListElement *curr = (ListElement*)(MEM.global_scope[name]->base + idx*sizeof(ListElement));
+        // for(int i=0; i<idx; i++)
+        //     curr = curr->next;
+        return curr->val;
     }
     // if not found in any scope
     printf("Error: variable not found\n");
     return INT_MIN;
 }
-
 
 set<mem_block>::iterator Memory::findHole(uint32_t sz, string name)
 {
@@ -97,11 +111,11 @@ void startScope()
 void endScope()
 {   
     map<string, set<mem_block>::iterator> scope = MEM.scope_stack.top();
-    for(auto it=scope.begin(); it!=scope.end(); it++)
-    {
-        MEM.blocks.erase(it->second);
-        MEM.blocks.insert({it->second->base, it->second->limit, it->second->name, false});
-    }
+    // for(auto it=scope.begin(); it!=scope.end(); it++)
+    // {
+    //     MEM.blocks.erase(it->second);
+    //     MEM.blocks.insert({it->second->base, it->second->limit, it->second->name, false});
+    // }
     MEM.scope_stack.pop();
 }
 
@@ -114,21 +128,22 @@ uint64_t createList(string name, uint32_t sz)
     uint64_t addr = itr->base;
     if(itr == MEM.blocks.end())
         return (uint64_t)NULL;
-
+    if((int)MEM.scope_stack.size() == 1)
+        MEM.global_scope[name] = itr;
     MEM.scope_stack.top()[name] = itr;
     if(sz==1)
         return addr;
     
-    ListElement *next = (ListElement*)(addr+sizeof(ListElement)), *curr=(ListElement *)addr;
-    curr->prev = NULL;
-    for(uint32_t i=0; i<sz-1; i++)
-    {
-        curr->next = next;
-        next->prev = curr;
-        curr = next;
-        next = (ListElement*)((uint64_t)next+sizeof(ListElement));
-    }
-    curr->next = NULL;
+    // ListElement *next = (ListElement*)(addr+sizeof(ListElement)), *curr=(ListElement *)addr;
+    // curr->prev = NULL;
+    // for(uint32_t i=0; i<sz-1; i++)
+    // {
+    //     curr->next = next;
+    //     next->prev = curr;
+    //     curr = next;
+    //     next = (ListElement*)((uint64_t)next+sizeof(ListElement));
+    // }
+    // curr->next = NULL;
 
     return addr;
 }

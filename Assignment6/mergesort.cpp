@@ -1,6 +1,6 @@
 #include "goodmalloc.hpp"
 
-#define MAX_ARRAY_SIZE 50
+#define MAX_ARRAY_SIZE 50000
 
 int calls = 0;
 
@@ -60,14 +60,17 @@ int main()
 {
     // Get the total memory footprint for the code
 
-    struct rusage usage;
-    struct timeval start, end;
+    // struct rusage usage;
+    // struct timeval start, end;
 
-    getrusage(RUSAGE_SELF, &usage);
-    start = usage.ru_utime;
+    // getrusage(RUSAGE_SELF, &usage);
+    // start = usage.ru_utime;
+
+    struct timeval start, end;
+    gettimeofday(&start, NULL);
 
     // create memory of size 250 MB
-    createMem(25e6);
+    createMem(250e6);
     startScope();
 
     // create a doubly linked list of size 50000 elements
@@ -111,15 +114,16 @@ int main()
     endScope();
 
     // end the timer
-    getrusage(RUSAGE_SELF, &usage);
-    end = usage.ru_utime;
+    // getrusage(RUSAGE_SELF, &usage);
+    // end = usage.ru_utime;
 
     // Get the total time taken
-    long seconds = (end.tv_sec - start.tv_sec);
+    gettimeofday(&end, NULL);
+    double seconds = (end.tv_sec - start.tv_sec)*1000 + (end.tv_usec - start.tv_usec)/1000;
 
     printf("\nWith FreeElem()\n");
-    printf("Total memory footprint %ld \n", usage.ru_maxrss);
-    printf("Total runtime %ld \n", seconds);
+    // printf("Total memory footprint %ld \n", usage.ru_maxrss);
+    printf("Total runtime %lf ms\n", seconds);
 
     return 0;
 }

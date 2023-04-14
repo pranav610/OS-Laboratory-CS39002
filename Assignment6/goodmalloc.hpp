@@ -32,6 +32,7 @@ class Memory{
     long mem_size;
     set<mem_block> blocks;
     stack<map<string, set<mem_block>::iterator>> scope_stack;
+    map<string, set<mem_block>::iterator> global_scope;
 
     Memory()
     {
