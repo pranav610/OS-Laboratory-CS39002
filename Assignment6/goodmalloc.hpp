@@ -12,7 +12,7 @@ void createMem(uint32_t);
 uint64_t createList(string, uint32_t);
 ssize_t assignVal(string, int64_t, int);
 int getVal(string, int64_t);
-ssize_t freeList(string);
+void freeElem(string);
 
 typedef struct _mem_block{
     uint64_t base;
@@ -28,6 +28,7 @@ class Memory{
     public:
     uint64_t mem_start;
     long mem_size;
+    uint64_t mem_footprint;
     set<mem_block> blocks;
     stack<map<string, set<mem_block>::iterator>> scope_stack;
     map<string, set<mem_block>::iterator> global_scope;
@@ -40,6 +41,7 @@ class Memory{
     }
 
     set<mem_block>::iterator findHole(uint32_t, string);
+    uint64_t memory_usage();
 
     void setMemStart(uint64_t mem_start){
         this->mem_start = mem_start;

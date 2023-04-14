@@ -5,7 +5,7 @@ Memory MEM;
 void createMem(uint32_t size)
 {
     uint64_t mem = (uint64_t)malloc(size);
-    if (mem == NULL)
+    if (mem == 0)
     {
         printf("Error: malloc failed");
         exit(1);
@@ -27,8 +27,6 @@ ssize_t assignVal(string name, int64_t idx, int val)
             return -1;
         // loop through the list and assign the value
         ListElement *curr = (ListElement*)(MEM.scope_stack.top()[name]->base + idx*sizeof(ListElement));
-        // for(int i=0; i<idx; i++)
-        //     curr = curr->next;
         curr->val = val;
         return 0;
     }
@@ -40,8 +38,6 @@ ssize_t assignVal(string name, int64_t idx, int val)
             return -1;
         // loop through the list and assign the value
         ListElement *curr = (ListElement*)(MEM.global_scope[name]->base + idx*sizeof(ListElement));
-        // for(int i=0; i<idx; i++)
-        //     curr = curr->next;
         curr->val = val;
         return 0;
     }
@@ -63,8 +59,6 @@ int getVal(string name, int64_t idx)
             return INT_MIN;
         // loop through the list and assign the value
         ListElement *curr = (ListElement*)(MEM.scope_stack.top()[name]->base + idx*sizeof(ListElement));
-        // for(int i=0; i<idx; i++)
-        //     curr = curr->next;
         return curr->val;
     }
     // check if name present in global scope
@@ -75,8 +69,6 @@ int getVal(string name, int64_t idx)
             return INT_MIN;
         // loop through the list and assign the value
         ListElement *curr = (ListElement*)(MEM.global_scope[name]->base + idx*sizeof(ListElement));
-        // for(int i=0; i<idx; i++)
-        //     curr = curr->next;
         return curr->val;
     }
     // if not found in any scope
@@ -125,6 +117,7 @@ uint64_t createList(string name, uint32_t sz)
         return (uint64_t)NULL;
 
     auto itr = MEM.findHole(sz*sizeof(ListElement), name);
+    MEM.mem_footprint = max(MEM.mem_footprint, MEM.memory_usage());
     uint64_t addr = itr->base;
     if(itr == MEM.blocks.end())
         return (uint64_t)NULL;
@@ -133,23 +126,23 @@ uint64_t createList(string name, uint32_t sz)
     MEM.scope_stack.top()[name] = itr;
     if(sz==1)
         return addr;
-    
-    // ListElement *next = (ListElement*)(addr+sizeof(ListElement)), *curr=(ListElement *)addr;
-    // curr->prev = NULL;
-    // for(uint32_t i=0; i<sz-1; i++)
-    // {
-    //     curr->next = next;
-    //     next->prev = curr;
-    //     curr = next;
-    //     next = (ListElement*)((uint64_t)next+sizeof(ListElement));
-    // }
-    // curr->next = NULL;
+
+    ListElement *next = (ListElement*)(addr+sizeof(ListElement)), *curr=(ListElement *)addr;
+    curr->prev = NULL;
+    for(uint32_t i=0; i<sz-1; i++)
+    {
+        curr->next = next;
+        next->prev = curr;
+        curr = next;
+        next = (ListElement*)((uint64_t)next+sizeof(ListElement));
+    }
+    curr->next = NULL;
 
     return addr;
 }
 
 
-ssize_t freeList(string name="")
+void freeElem(string name="")
 {
     if(name=="")
     {
@@ -170,20 +163,18 @@ ssize_t freeList(string name="")
         {
             MEM.blocks.erase(MEM.scope_stack.top()[name]);
             MEM.scope_stack.top().erase(name);
-            return 0;
+            return;
         }
-        printf("Error: variable not found\n");
-        exit(EXIT_FAILURE);
+        throw "Error: variable not found";
     }
 }
 
-int memory_usage()
+uint64_t Memory::memory_usage()
 {
-    int usage = 0;
+    uint64_t usage = 0;
     for (const auto &block : MEM.blocks)
     {
         usage += block.limit;
     }
-    cout << "Memory usage: " << usage << " bytes" << endl;
     return usage;
 }
