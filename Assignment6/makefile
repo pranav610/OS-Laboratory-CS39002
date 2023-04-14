@@ -1,3 +1,3 @@
 
-main: 
-	g++ mergesort.cpp goodmalloc.cpp 
+main:
+	g++ -w mergesort.cpp goodmalloc.cpp

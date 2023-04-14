@@ -1,17 +1,25 @@
 #include "goodmalloc.hpp"
 
-#define MAX_ARRAY_SIZE 50000
+#define MAX_ARRAY_SIZE 5
 
 void MERGESORT(string s,string l,string r)
 {
-    if(getVal(l,0) == getVal(r,0))return;
-    startScope();
+    if(getVal(l,0) >= getVal(r,0))return;
+    // printf("\nl=%d r=%d\n",getVal(l,0),getVal(r,0));
     string m="m";
-    struct ListElement *list = (struct ListElement *)createList(m, 1);
+    createList(m, 1);
     assignVal(m, 0, (getVal(l,0)+getVal(r,0))/2);
+    string m_="m_";
+    createList(m_, 1);
+    assignVal(m_, 0, getVal(m,0)+1);
 
+    startScope();
     MERGESORT(s,l,m);
-    MERGESORT(s,m,r);
+    endScope();
+
+    startScope();
+    MERGESORT(s,m_,r);
+    endScope();
 
     string temp="temp";
     createList(temp, getVal(r,0)-getVal(l,0)+1);
@@ -57,6 +65,15 @@ void MERGESORT(string s,string l,string r)
         assignVal(k, 0, getVal(k,0)+1);
     }
 
+    // assignVal(i, 0, 0);
+    // // print temp
+    // while(getVal(i,0) < getVal(r,0)-getVal(l,0)+1)
+    // {
+    //     printf("%d ",getVal(temp,getVal(i,0)));
+    //     assignVal(i, 0, getVal(i,0)+1);
+    // }
+    // printf("\n");
+
     assignVal(j, 0, 0);
     while(getVal(j,0) < getVal(r,0)-getVal(l,0)+1)
     {
@@ -64,7 +81,6 @@ void MERGESORT(string s,string l,string r)
         assignVal(j, 0, getVal(j,0)+1);
     }
 
-    endScope();
 }
 
 int main()
@@ -113,6 +129,7 @@ int main()
     assignVal(l, 0, 0);
     assignVal(r, 0, MAX_ARRAY_SIZE - 1);
 
+    startScope();
     MERGESORT(s, l , r);
 
     // print the sorted list
