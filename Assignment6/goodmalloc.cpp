@@ -99,7 +99,8 @@ void endScope()
     map<string, set<mem_block>::iterator> scope = MEM.scope_stack.top();
     for(auto it=scope.begin(); it!=scope.end(); it++)
     {
-        freeList(it->first);
+        MEM.blocks.erase(it->second);
+        MEM.blocks.insert({it->second->base, it->second->limit, it->second->name, false});
     }
     MEM.scope_stack.pop();
 }
@@ -137,13 +138,13 @@ ssize_t freeList(string name="")
 {
     if(name=="")
     {
-        // free all entries in top scope which are not in use
-        for(auto it=MEM.scope_stack.top().begin(); it!=MEM.scope_stack.top().end(); it++)
+        // free all entries in MEM block which are not in use
+        for(auto it=MEM.blocks.begin(); it!=MEM.blocks.end(); it++)
         {
-            if(!it->second->in_use)
+            if(!it->in_use)
             {
-                MEM.blocks.erase(it->second);
-                MEM.scope_stack.top().erase(it->first);
+                it = MEM.blocks.erase(it);
+                it--;
             }
         }
     }
