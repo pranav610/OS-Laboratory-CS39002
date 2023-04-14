@@ -2,24 +2,32 @@
 
 #define MAX_ARRAY_SIZE 5
 
+int calls = 0;
+
 void MERGESORT(string s,string l,string r)
-{
-    if(getVal(l,0) >= getVal(r,0))return;
-    // printf("\nl=%d r=%d\n",getVal(l,0),getVal(r,0));
+{   
+    cout << "Args: " << s << " " << l << " " << r << endl;
+    startScope();
+    printf("Call %d: l=%d r=%d\n",calls++,getVal(l,0),getVal(r,0));
+    if(getVal(l,0) >= getVal(r,0)){endScope();return;}
+    
     string m="m";
     createList(m, 1);
     assignVal(m, 0, (getVal(l,0)+getVal(r,0))/2);
+    // string r = "r";
+    createList(r, 1);
+    assignVal(r, 0, getVal(m,0));
+    MERGESORT(s,l,r);
+    freeList(r);
+
     string m_="m_";
     createList(m_, 1);
     assignVal(m_, 0, getVal(m,0)+1);
-
-    startScope();
-    MERGESORT(s,l,m);
-    endScope();
-
-    startScope();
-    MERGESORT(s,m_,r);
-    endScope();
+    // string l = "l";
+    createList(l, 1);
+    assignVal(l, 0, getVal(m,0)+1);
+    MERGESORT(s,l,r);
+    freeList(l);
 
     string temp="temp";
     createList(temp, getVal(r,0)-getVal(l,0)+1);
@@ -80,7 +88,7 @@ void MERGESORT(string s,string l,string r)
         assignVal(s, getVal(l,0)+getVal(j,0), getVal(temp,getVal(j,0)));
         assignVal(j, 0, getVal(j,0)+1);
     }
-
+    endScope();
 }
 
 int main()
@@ -107,7 +115,7 @@ int main()
     assignVal(i, 0, 0);
 
     while(getVal(i, 0) < MAX_ARRAY_SIZE){
-        assignVal(s, getVal(i, 0), dis(gen));
+        assignVal(s, getVal(i, 0), 4 - getVal(i, 0));
         assignVal(i, 0, getVal(i, 0) + 1);
     }
 
@@ -118,6 +126,7 @@ int main()
         printf("%d ", getVal(s, getVal(i, 0)));
         assignVal(i, 0, getVal(i, 0) + 1);
     }
+    printf("\n");
 
 
     // call mergesort
@@ -129,7 +138,7 @@ int main()
     assignVal(l, 0, 0);
     assignVal(r, 0, MAX_ARRAY_SIZE - 1);
 
-    startScope();
+    
     MERGESORT(s, l , r);
 
     // print the sorted list

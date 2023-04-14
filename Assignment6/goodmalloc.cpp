@@ -137,30 +137,25 @@ ssize_t freeList(string name="")
 {
     if(name=="")
     {
-        // free all entries in blocks which are not present in any scope
-        set<mem_block> temp = MEM.blocks;
-        for(auto it=temp.begin(); it!=temp.end(); it++)
+        // free all entries in top scope which are not in use
+        for(auto it=MEM.scope_stack.top().begin(); it!=MEM.scope_stack.top().end(); it++)
         {
-            if(it->name == "_START_" || it->name == "_END_")
-                continue;
-            if(!it->in_use)
-                freeList(it->name);
+            if(!it->second->in_use)
+            {
+                MEM.blocks.erase(it->second);
+                MEM.scope_stack.top().erase(it->first);
+            }
         }
     }
     else
     {
-        // free the entry which occurs first in the scope stack with name as key
-        stack<map<string, set<mem_block>::iterator>> temp = MEM.scope_stack;
-        while(!temp.empty())
+        // free the entry which occurs in the top scope
+        if(MEM.scope_stack.top().find(name) != MEM.scope_stack.top().end())
         {
-            if(temp.top().find(name) != temp.top().end())
-            {
-                MEM.blocks.erase(temp.top()[name]);
-                return 0;
-            }
-            temp.pop();
+            MEM.blocks.erase(MEM.scope_stack.top()[name]);
+            MEM.scope_stack.top().erase(name);
+            return 0;
         }
-        // if not found in any scope
         printf("Error: variable not found\n");
         exit(EXIT_FAILURE);
     }
