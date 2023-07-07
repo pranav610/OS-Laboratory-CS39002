@@ -1,4 +1,4 @@
-# Shellkil 
+# Mini Shell
 ## Dependency
 - Readline library C
 ```bash
